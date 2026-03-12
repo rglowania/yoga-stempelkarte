@@ -14,12 +14,12 @@
     --amber-50: #FAEEDA; --amber-600: #854F0B;
     --green-50: #EAF3DE; --green-600: #3B6D11;
     --red-50: #FCEBEB; --red-600: #A32D2D;
-    --gray-50: #F8F7F4; --gray-100: #F1EFE8; --gray-200: #D3D1C7;
-    --gray-600: #5F5E5A; --gray-800: #2C2C2A;
+    --gray-50: #F8F7F4; --gray-100: #F1EFE8;
+    --gray-800: #2C2C2A;
     --bg: #FAFAF8; --surface: #FFFFFF; --border: rgba(0,0,0,0.1);
     --text: #1A1A18; --text-muted: #5F5E5A; --text-hint: #888780;
     --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px;
-    --stamp-size: 30px;
+    --stamp-size: 34px;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -30,24 +30,22 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
-
-  /* Setup Screen */
   #setup-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 1.5rem; }
   .setup-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-xl); padding: 2rem; max-width: 480px; width: 100%; }
   .setup-logo { width: 48px; height: 48px; background: var(--teal-50); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 24px; }
   .setup-card h1 { font-size: 22px; font-weight: 600; margin-bottom: 6px; }
-  .setup-card p { font-size: 14px; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
+  .setup-card > p { font-size: 14px; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
   .setup-steps { background: var(--gray-50); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
   .setup-steps h3 { font-size: 13px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
   .setup-step { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; font-size: 13px; color: var(--text-muted); }
   .setup-step-num { background: var(--teal-50); color: var(--teal-600); width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; margin-top: 1px; }
-  .setup-step a { color: var(--teal-600); text-decoration: none; }
   .setup-step code { background: var(--gray-100); padding: 1px 5px; border-radius: 4px; font-family: monospace; font-size: 12px; }
   .form-group { margin-bottom: 12px; }
   .form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 5px; }
   .form-group input { width: 100%; padding: 9px 12px; font-size: 14px; border: 0.5px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--text); outline: none; }
   .form-group input:focus { border-color: var(--teal-600); box-shadow: 0 0 0 3px rgba(29,158,117,0.1); }
   .form-group .hint { font-size: 12px; color: var(--text-hint); margin-top: 4px; }
+  #setup-error { color: var(--red-600); font-size: 13px; margin-top: 10px; display: none; padding: 8px 12px; background: var(--red-50); border-radius: var(--radius-md); }
   .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 14px; font-weight: 500; border: 0.5px solid var(--border); border-radius: var(--radius-md); background: none; color: var(--text); cursor: pointer; transition: all 0.15s; }
   .btn:hover { background: var(--gray-100); }
   .btn:active { transform: scale(0.98); }
@@ -57,101 +55,70 @@
   .btn.danger:hover { background: var(--red-50); }
   .btn.full { width: 100%; justify-content: center; }
   .btn:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
-  #setup-error { color: var(--red-600); font-size: 13px; margin-top: 10px; display: none; padding: 8px 12px; background: var(--red-50); border-radius: var(--radius-md); }
-
-  /* Main App */
   #app-screen { display: none; max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
   .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
   .app-header h1 { font-size: 20px; font-weight: 600; }
   .app-header .sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
   .conn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal-600); display: inline-block; margin-right: 5px; }
-
   .tabs { display: flex; gap: 2px; margin-bottom: 1.5rem; border-bottom: 0.5px solid var(--border); }
   .tab { padding: 8px 14px; font-size: 14px; cursor: pointer; border: none; background: none; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -0.5px; }
   .tab.active { color: var(--text); border-bottom-color: var(--teal-600); font-weight: 500; }
-
-  /* Add customer form */
   .add-form { background: var(--gray-50); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
   .add-form h3 { font-size: 14px; font-weight: 500; margin-bottom: 10px; }
   .form-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end; }
   .form-row .form-group { flex: 1; min-width: 120px; margin-bottom: 0; }
   .form-row select { width: 100%; padding: 9px 12px; font-size: 14px; border: 0.5px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--text); }
-
-  /* Customer cards */
   .customer-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 10px; }
   .customer-row { display: flex; align-items: center; gap: 12px; }
   .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; flex-shrink: 0; }
-  .customer-info { flex: 1; min-width: 0; }
   .customer-name { font-size: 15px; font-weight: 500; }
   .customer-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
   .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; margin-left: 6px; }
   .badge.green { background: var(--green-50); color: var(--green-600); }
   .badge.amber { background: var(--amber-50); color: var(--amber-600); }
   .badge.blue { background: var(--blue-50); color: var(--blue-600); }
-
-  .stamps-grid { display: flex; gap: 5px; flex-wrap: wrap; margin: 10px 0 8px; }
-  .stamp { width: var(--stamp-size); height: var(--stamp-size); border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 13px; cursor: default; transition: transform 0.1s; }
+  .stamps-grid { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0 8px; }
+  .stamp-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; }
+  .stamp { width: var(--stamp-size); height: var(--stamp-size); border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; }
   .stamp.filled { background: var(--teal-600); border-color: var(--teal-600); color: white; }
-  .stamp.filled::after { content: "✓"; font-size: 12px; }
+  .stamp.filled::after { content: "✓"; font-size: 13px; }
   .stamp.empty { background: var(--gray-50); }
-  .stamp.reward-empty { background: var(--blue-50); border-color: var(--blue-600); }
-  .stamp.reward-empty::after { content: "★"; font-size: 11px; color: var(--blue-600); }
-  .stamp.reward-filled { background: #185FA5; border-color: #185FA5; color: white; }
-  .stamp.reward-filled::after { content: "★"; font-size: 11px; }
-
+  .stamp-date { font-size: 9px; color: var(--text-hint); white-space: pre; text-align: center; line-height: 1.3; min-height: 22px; }
   .progress-bar { height: 3px; background: var(--gray-100); border-radius: 2px; margin-bottom: 10px; overflow: hidden; }
   .progress-fill { height: 100%; background: var(--teal-600); border-radius: 2px; transition: width 0.3s ease; }
-
   .card-actions { display: flex; gap: 6px; flex-wrap: wrap; }
-
-  /* Stats */
   .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
   .stat-card { background: var(--gray-50); border-radius: var(--radius-md); padding: 12px; }
   .stat-label { font-size: 12px; color: var(--text-muted); }
   .stat-value { font-size: 24px; font-weight: 600; margin-top: 4px; }
-
-  /* Toast */
+  .settings-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 12px; }
+  .settings-card h3 { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
+  .settings-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
   .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--gray-800); color: white; padding: 9px 18px; border-radius: 20px; font-size: 13px; opacity: 0; transition: all 0.25s; pointer-events: none; white-space: nowrap; z-index: 100; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-  /* Loading */
   .loading { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 14px; }
   .empty { text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); font-size: 14px; }
   .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--teal-600); border-radius: 50%; animation: spin 0.6s linear infinite; margin-right: 8px; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
-
-  /* Settings */
-  .settings-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 12px; }
-  .settings-card h3 { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
-  .settings-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
-  .setting-row { display: flex; align-items: center; gap: 12px; }
-  .setting-row input[type=range] { flex: 1; }
-  .setting-val { font-size: 16px; font-weight: 600; min-width: 36px; }
-
   @media (max-width: 480px) {
     .stat-grid { grid-template-columns: repeat(2, 1fr); }
     .form-row { flex-direction: column; }
-    .form-row .form-group { min-width: unset; }
-    --stamp-size: 26px;
+    :root { --stamp-size: 28px; }
   }
 </style>
 </head>
 <body>
 
-<!-- Setup / Config Screen -->
 <div id="setup-screen">
   <div class="setup-card">
     <div class="setup-logo">🧘</div>
     <h1>Einrichtung</h1>
     <p>Verbinde die App mit deiner Supabase-Datenbank, damit Kundendaten sicher online gespeichert werden.</p>
-
     <div class="setup-steps">
-      <h3>So geht's</h3>
-      <div class="setup-step"><div class="setup-step-num">1</div><div>Gehe zu <a href="https://supabase.com" target="_blank">supabase.com</a> und erstelle ein kostenloses Konto + neues Projekt.</div></div>
-      <div class="setup-step"><div class="setup-step-num">2</div><div>Öffne im Projekt <strong>SQL Editor</strong> und führe diesen Code aus:<br><br><code>CREATE TABLE customers (<br>&nbsp;&nbsp;id uuid DEFAULT gen_random_uuid() PRIMARY KEY,<br>&nbsp;&nbsp;name text NOT NULL,<br>&nbsp;&nbsp;package int DEFAULT 10,<br>&nbsp;&nbsp;stamps int DEFAULT 0,<br>&nbsp;&nbsp;color text DEFAULT 'teal',<br>&nbsp;&nbsp;created_at timestamptz DEFAULT now()<br>);<br>ALTER TABLE customers ENABLE ROW LEVEL SECURITY;<br>CREATE POLICY "allow_all" ON customers FOR ALL USING (true);</code></div></div>
-      <div class="setup-step"><div class="setup-step-num">3</div><div>Gehe zu <strong>Project Settings → API</strong> und kopiere <em>Project URL</em> und <em>anon public</em> Key unten ein.</div></div>
+      <h3>Zugangsdaten findest du in Supabase</h3>
+      <div class="setup-step"><div class="setup-step-num">1</div><div>Project Settings → API</div></div>
+      <div class="setup-step"><div class="setup-step-num">2</div><div><strong>Project URL</strong> und <strong>anon public</strong> Key kopieren</div></div>
     </div>
-
     <div class="form-group">
       <label>Supabase Project URL</label>
       <input type="url" id="sb-url" placeholder="https://xxxx.supabase.co" />
@@ -159,16 +126,13 @@
     <div class="form-group">
       <label>Supabase Anon Key</label>
       <input type="text" id="sb-key" placeholder="eyJhbGci..." />
-      <div class="hint">Der öffentliche Key (anon/public) – kein Service Role Key!</div>
+      <div class="hint">Den <code>anon public</code> Key verwenden – nicht den service_role Key.</div>
     </div>
     <div id="setup-error"></div>
-    <button class="btn primary full" onclick="connectSupabase()" id="connect-btn">
-      Verbinden &amp; loslegen
-    </button>
+    <button class="btn primary full" onclick="connectSupabase()" id="connect-btn">Verbinden &amp; loslegen</button>
   </div>
 </div>
 
-<!-- Main App -->
 <div id="app-screen">
   <div class="app-header">
     <div>
@@ -177,21 +141,16 @@
     </div>
     <button class="btn" onclick="logout()" style="font-size:13px;padding:6px 12px;">Trennen</button>
   </div>
-
   <div class="tabs">
     <button class="tab active" onclick="showTab('kunden')">Kunden</button>
     <button class="tab" onclick="showTab('statistik')">Übersicht</button>
     <button class="tab" onclick="showTab('einstellungen')">Einstellungen</button>
   </div>
-
-  <!-- Kunden Tab -->
   <div id="tab-kunden">
     <div class="add-form">
       <h3>Neuen Kunden hinzufügen</h3>
       <div class="form-row">
-        <div class="form-group">
-          <input type="text" id="new-name" placeholder="Name" />
-        </div>
+        <div class="form-group"><input type="text" id="new-name" placeholder="Name" /></div>
         <div class="form-group" style="max-width:140px;">
           <select id="new-package">
             <option value="5">5er-Karte</option>
@@ -204,24 +163,11 @@
     </div>
     <div id="customer-list"><div class="loading"><span class="spinner"></span>Lädt…</div></div>
   </div>
-
-  <!-- Statistik Tab -->
   <div id="tab-statistik" style="display:none;">
     <div class="stat-grid" id="stats-grid"></div>
     <div id="stats-detail"></div>
   </div>
-
-  <!-- Einstellungen Tab -->
   <div id="tab-einstellungen" style="display:none;">
-    <div class="settings-card">
-      <h3>Bonus-Schwelle</h3>
-      <p>Nach wie vielen Einheiten bekommt der Kunde einen Bonus-Stempel (markiert mit ★)?</p>
-      <div class="setting-row">
-        <input type="range" min="5" max="20" step="1" id="bonus-slider" value="10" oninput="updateBonus(this.value)" />
-        <span class="setting-val" id="bonus-val">10</span>
-      </div>
-      <p style="margin-top:8px;font-size:12px;color:var(--text-hint);">Einstellung gilt nur auf diesem Gerät.</p>
-    </div>
     <div class="settings-card">
       <h3>Verbindung</h3>
       <p>Die App ist mit deiner Supabase-Datenbank verbunden. Alle Daten werden dort sicher gespeichert.</p>
@@ -234,26 +180,31 @@
 
 <script>
 const COLORS = ['teal','purple','coral','blue','amber'];
-let supabase_client = null;
+let sb = null;
 let customers = [];
-let bonusThreshold = parseInt(localStorage.getItem('yoga-bonus') || '10');
+let stampMap = {};
 
-// ── Supabase Setup ──────────────────────────────────────────────────────────
+function formatDate(iso) {
+  const d = new Date(iso);
+  const day = String(d.getDate()).padStart(2,'0');
+  const mon = String(d.getMonth()+1).padStart(2,'0');
+  const h   = String(d.getHours()).padStart(2,'0');
+  const min = String(d.getMinutes()).padStart(2,'0');
+  return day+'.'+mon+'\n'+h+':'+min;
+}
+
 function connectSupabase() {
   const url = document.getElementById('sb-url').value.trim();
   const key = document.getElementById('sb-key').value.trim();
   const err = document.getElementById('setup-error');
   err.style.display = 'none';
-
   if (!url || !url.startsWith('https://')) { showSetupError('Bitte eine gültige Supabase URL eingeben.'); return; }
   if (!key || key.length < 20) { showSetupError('Bitte den Anon Key eingeben.'); return; }
-
   const btn = document.getElementById('connect-btn');
   btn.disabled = true;
   btn.innerHTML = '<span class="spinner"></span>Verbinde…';
-
   try {
-    supabase_client = supabase.createClient(url, key);
+    sb = supabase.createClient(url, key);
     localStorage.setItem('yoga-sb-url', url);
     localStorage.setItem('yoga-sb-key', key);
     startApp();
@@ -279,18 +230,27 @@ function logout() {
 async function startApp() {
   document.getElementById('setup-screen').style.display = 'none';
   document.getElementById('app-screen').style.display = 'block';
-  await loadCustomers();
+  await loadAll();
 }
 
-// ── Data Layer ──────────────────────────────────────────────────────────────
-async function loadCustomers() {
-  const { data, error } = await supabase_client
-    .from('customers')
-    .select('*')
-    .order('created_at', { ascending: true });
-
-  if (error) { showToast('Ladefehler: ' + error.message); return; }
-  customers = data || [];
+async function loadAll() {
+  const [{ data: cData }, { data: sData }] = await Promise.all([
+    sb.from('customers').select('*').order('created_at', { ascending: true }),
+    sb.from('stamps').select('*').order('created_at', { ascending: true })
+  ]);
+  customers = cData || [];
+  stampMap = {};
+  (sData || []).forEach(s => {
+    if (!stampMap[s.customer_id]) stampMap[s.customer_id] = [];
+    stampMap[s.customer_id].push(s);
+  });
+  for (const c of customers) {
+    const count = (stampMap[c.id] || []).length;
+    if (c.stamps !== count) {
+      await sb.from('customers').update({ stamps: count }).eq('id', c.id);
+      c.stamps = count;
+    }
+  }
   renderCustomers();
 }
 
@@ -298,19 +258,14 @@ async function addCustomer() {
   const name = document.getElementById('new-name').value.trim();
   const pkg = parseInt(document.getElementById('new-package').value);
   if (!name) { document.getElementById('new-name').focus(); return; }
-
   const color = COLORS[customers.length % COLORS.length];
   const btn = document.getElementById('add-btn');
   btn.disabled = true;
-
-  const { data, error } = await supabase_client
-    .from('customers')
-    .insert([{ name, package: pkg, stamps: 0, color }])
-    .select().single();
-
+  const { data, error } = await sb.from('customers').insert([{ name, package: pkg, stamps: 0, color }]).select().single();
   btn.disabled = false;
   if (error) { showToast('Fehler: ' + error.message); return; }
   customers.push(data);
+  stampMap[data.id] = [];
   document.getElementById('new-name').value = '';
   renderCustomers();
   showToast('✓ ' + name + ' hinzugefügt');
@@ -319,27 +274,26 @@ async function addCustomer() {
 async function addStamp(id) {
   const c = customers.find(x => x.id === id);
   if (!c || c.stamps >= c.package) return;
-  const newStamps = c.stamps + 1;
-
-  const { error } = await supabase_client
-    .from('customers').update({ stamps: newStamps }).eq('id', id);
+  const { data, error } = await sb.from('stamps').insert([{ customer_id: id }]).select().single();
   if (error) { showToast('Fehler: ' + error.message); return; }
-
-  c.stamps = newStamps;
+  stampMap[id].push(data);
+  c.stamps = stampMap[id].length;
+  await sb.from('customers').update({ stamps: c.stamps }).eq('id', id);
   renderCustomers();
-  if (newStamps >= c.package) showToast('🎉 ' + c.name + ' hat die Karte voll!');
+  if (c.stamps >= c.package) showToast('🎉 ' + c.name + ' hat die Karte voll!');
   else showToast('Stempel vergeben');
 }
 
 async function removeStamp(id) {
   const c = customers.find(x => x.id === id);
-  if (!c || c.stamps <= 0) return;
-  const newStamps = c.stamps - 1;
-
-  const { error } = await supabase_client
-    .from('customers').update({ stamps: newStamps }).eq('id', id);
+  if (!c || !stampMap[id] || stampMap[id].length === 0) return;
+  if (!confirm('Letzten Stempel wirklich entfernen?')) return;
+  const last = stampMap[id][stampMap[id].length - 1];
+  const { error } = await sb.from('stamps').delete().eq('id', last.id);
   if (error) { showToast('Fehler: ' + error.message); return; }
-  c.stamps = newStamps;
+  stampMap[id].pop();
+  c.stamps = stampMap[id].length;
+  await sb.from('customers').update({ stamps: c.stamps }).eq('id', id);
   renderCustomers();
   showToast('Stempel entfernt');
 }
@@ -347,41 +301,33 @@ async function removeStamp(id) {
 async function redeemCard(id) {
   const c = customers.find(x => x.id === id);
   if (!c || c.stamps < c.package) return;
-
-  const { error } = await supabase_client
-    .from('customers').update({ stamps: 0 }).eq('id', id);
+  if (!confirm('Karte für ' + c.name + ' einlösen und alle Stempel zurücksetzen?')) return;
+  const { error } = await sb.from('stamps').delete().eq('customer_id', id);
   if (error) { showToast('Fehler: ' + error.message); return; }
+  stampMap[id] = [];
   c.stamps = 0;
+  await sb.from('customers').update({ stamps: 0 }).eq('id', id);
   renderCustomers();
   showToast('🎊 Karte eingelöst! Neue Runde startet.');
 }
 
 async function deleteCustomer(id) {
   const c = customers.find(x => x.id === id);
-  if (!confirm(c.name + ' wirklich löschen?')) return;
-
-  const { error } = await supabase_client.from('customers').delete().eq('id', id);
+  if (!confirm(c.name + ' wirklich löschen? Alle Stempel werden ebenfalls gelöscht.')) return;
+  const { error } = await sb.from('customers').delete().eq('id', id);
   if (error) { showToast('Fehler: ' + error.message); return; }
   customers = customers.filter(x => x.id !== id);
+  delete stampMap[id];
   renderCustomers();
   showToast('Kunde gelöscht');
 }
 
-// ── Rendering ───────────────────────────────────────────────────────────────
-function initials(name) {
-  return name.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
-}
+function initials(name) { return name.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase(); }
 
 function avatarStyle(color) {
-  const map = {
-    teal:   { bg: 'var(--teal-50)',   fg: 'var(--teal-600)' },
-    purple: { bg: 'var(--purple-50)', fg: 'var(--purple-600)' },
-    coral:  { bg: 'var(--coral-50)',  fg: 'var(--coral-600)' },
-    blue:   { bg: 'var(--blue-50)',   fg: 'var(--blue-600)' },
-    amber:  { bg: 'var(--amber-50)',  fg: 'var(--amber-600)' },
-  };
-  const c = map[color] || map.teal;
-  return `background:${c.bg};color:${c.fg}`;
+  const map = { teal: ['var(--teal-50)','var(--teal-600)'], purple: ['var(--purple-50)','var(--purple-600)'], coral: ['var(--coral-50)','var(--coral-600)'], blue: ['var(--blue-50)','var(--blue-600)'], amber: ['var(--amber-50)','var(--amber-600)'] };
+  const [bg, fg] = map[color] || map.teal;
+  return 'background:'+bg+';color:'+fg;
 }
 
 function renderCustomers() {
@@ -390,89 +336,73 @@ function renderCustomers() {
     list.innerHTML = '<div class="empty">Noch keine Kunden angelegt.<br>Füge den ersten Kunden oben hinzu.</div>';
     return;
   }
-
   list.innerHTML = customers.map(c => {
-    const pct = Math.round((c.stamps / c.package) * 100);
-    const full = c.stamps >= c.package;
-    const near = !full && c.stamps >= c.package - 2;
+    const stamps = stampMap[c.id] || [];
+    const count = stamps.length;
+    const pct = Math.round((count / c.package) * 100);
+    const full = count >= c.package;
+    const near = !full && count >= c.package - 2;
     const badge = full
       ? '<span class="badge blue">Karte voll!</span>'
       : near ? '<span class="badge amber">Fast voll</span>' : '<span class="badge green">Aktiv</span>';
 
     const stampsHtml = Array.from({ length: c.package }, (_, i) => {
-      const filled = i < c.stamps;
-      const isBonus = (i + 1) % bonusThreshold === 0;
-      if (filled && isBonus) return '<div class="stamp reward-filled"></div>';
-      if (filled) return '<div class="stamp filled"></div>';
-      if (isBonus) return '<div class="stamp reward-empty"></div>';
-      return '<div class="stamp empty"></div>';
+      if (i < count) {
+        const dateStr = formatDate(stamps[i].created_at);
+        return '<div class="stamp-wrap"><div class="stamp filled" title="'+dateStr.replace('\n',' ')+'"></div><div class="stamp-date">'+dateStr+'</div></div>';
+      }
+      return '<div class="stamp-wrap"><div class="stamp empty"></div><div class="stamp-date"> </div></div>';
     }).join('');
 
-    return `<div class="customer-card">
-      <div class="customer-row">
-        <div class="avatar" style="${avatarStyle(c.color)}">${initials(c.name)}</div>
-        <div class="customer-info">
-          <div class="customer-name">${c.name}${badge}</div>
-          <div class="customer-meta">${c.package}er-Karte · ${c.stamps} von ${c.package} Einheiten</div>
-        </div>
-      </div>
-      <div class="stamps-grid">${stampsHtml}</div>
-      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
-      <div class="card-actions">
-        <button class="btn primary" onclick="addStamp('${c.id}')" ${full ? 'disabled' : ''}>+ Stempel</button>
-        ${full ? `<button class="btn" onclick="redeemCard('${c.id}')">Karte einlösen</button>` : ''}
-        <button class="btn" onclick="removeStamp('${c.id}')">– Entfernen</button>
-        <button class="btn danger" onclick="deleteCustomer('${c.id}')" style="margin-left:auto;">Löschen</button>
-      </div>
-    </div>`;
+    return '<div class="customer-card">'
+      + '<div class="customer-row">'
+      + '<div class="avatar" style="'+avatarStyle(c.color)+'">'+initials(c.name)+'</div>'
+      + '<div style="flex:1;min-width:0;">'
+      + '<div class="customer-name">'+c.name+badge+'</div>'
+      + '<div class="customer-meta">'+c.package+'er-Karte · '+count+' von '+c.package+' Einheiten</div>'
+      + '</div></div>'
+      + '<div class="stamps-grid">'+stampsHtml+'</div>'
+      + '<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>'
+      + '<div class="card-actions">'
+      + '<button class="btn primary" onclick="addStamp(\''+c.id+'\')" '+(full?'disabled':'')+'>+ Stempel</button>'
+      + (full ? '<button class="btn" onclick="redeemCard(\''+c.id+'\')">Karte einlösen</button>' : '')
+      + '<button class="btn" onclick="removeStamp(\''+c.id+'\')">– Entfernen</button>'
+      + '<button class="btn danger" onclick="deleteCustomer(\''+c.id+'\')" style="margin-left:auto;">Löschen</button>'
+      + '</div></div>';
   }).join('');
 }
 
 function renderStats() {
   const total = customers.length;
-  const totalStamps = customers.reduce((s, c) => s + c.stamps, 0);
-  const full = customers.filter(c => c.stamps >= c.package).length;
-
-  document.getElementById('stats-grid').innerHTML = `
-    <div class="stat-card"><div class="stat-label">Kunden</div><div class="stat-value">${total}</div></div>
-    <div class="stat-card"><div class="stat-label">Stempel vergeben</div><div class="stat-value">${totalStamps}</div></div>
-    <div class="stat-card"><div class="stat-label">Volle Karten</div><div class="stat-value">${full}</div></div>
-  `;
-
-  const sorted = [...customers].sort((a, b) => (b.stamps / b.package) - (a.stamps / a.package));
-  document.getElementById('stats-detail').innerHTML = '<div style="font-size:13px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Alle Kunden</div>' +
-    sorted.map(c => {
-      const pct = Math.round((c.stamps / c.package) * 100);
-      return `<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border);">
-        <div class="avatar" style="${avatarStyle(c.color)};width:32px;height:32px;font-size:12px;">${initials(c.name)}</div>
-        <div style="flex:1;min-width:0;">
-          <div style="font-size:14px;font-weight:500;">${c.name}</div>
-          <div style="font-size:12px;color:var(--text-muted);">${c.stamps}/${c.package} · ${c.package}er-Karte</div>
-        </div>
-        <div style="width:80px;">
-          <div style="font-size:12px;color:var(--text-muted);text-align:right;margin-bottom:3px;">${pct}%</div>
-          <div class="progress-bar" style="margin-bottom:0;"><div class="progress-fill" style="width:${pct}%"></div></div>
-        </div>
-      </div>`;
+  const totalStamps = customers.reduce((s, c) => s + (stampMap[c.id]||[]).length, 0);
+  const full = customers.filter(c => (stampMap[c.id]||[]).length >= c.package).length;
+  document.getElementById('stats-grid').innerHTML =
+    '<div class="stat-card"><div class="stat-label">Kunden</div><div class="stat-value">'+total+'</div></div>'
+    +'<div class="stat-card"><div class="stat-label">Stempel vergeben</div><div class="stat-value">'+totalStamps+'</div></div>'
+    +'<div class="stat-card"><div class="stat-label">Volle Karten</div><div class="stat-value">'+full+'</div></div>';
+  const sorted = [...customers].sort((a,b) => ((stampMap[b.id]||[]).length/b.package) - ((stampMap[a.id]||[]).length/a.package));
+  document.getElementById('stats-detail').innerHTML =
+    '<div style="font-size:13px;font-weight:500;color:var(--text-muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;">Alle Kunden</div>'
+    + sorted.map(c => {
+      const count = (stampMap[c.id]||[]).length;
+      const pct = Math.round(count / c.package * 100);
+      return '<div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:0.5px solid var(--border);">'
+        +'<div class="avatar" style="'+avatarStyle(c.color)+';width:32px;height:32px;font-size:12px;">'+initials(c.name)+'</div>'
+        +'<div style="flex:1;min-width:0;"><div style="font-size:14px;font-weight:500;">'+c.name+'</div>'
+        +'<div style="font-size:12px;color:var(--text-muted);">'+count+'/'+c.package+' · '+c.package+'er-Karte</div></div>'
+        +'<div style="width:80px;"><div style="font-size:12px;color:var(--text-muted);text-align:right;margin-bottom:3px;">'+pct+'%</div>'
+        +'<div class="progress-bar" style="margin-bottom:0;"><div class="progress-fill" style="width:'+pct+'%"></div></div></div></div>';
     }).join('');
 }
 
-// ── UI ───────────────────────────────────────────────────────────────────────
 function showTab(tab) {
-  ['kunden', 'statistik', 'einstellungen'].forEach(t => {
-    document.getElementById('tab-' + t).style.display = t === tab ? '' : 'none';
+  ['kunden','statistik','einstellungen'].forEach(t => {
+    document.getElementById('tab-'+t).style.display = t===tab ? '' : 'none';
   });
-  document.querySelectorAll('.tab').forEach((el, i) => {
-    el.classList.toggle('active', ['kunden', 'statistik', 'einstellungen'][i] === tab);
+  document.querySelectorAll('.tab').forEach((el,i) => {
+    el.classList.toggle('active', ['kunden','statistik','einstellungen'][i]===tab);
   });
-  if (tab === 'statistik') renderStats();
-}
-
-function updateBonus(v) {
-  bonusThreshold = parseInt(v);
-  document.getElementById('bonus-val').textContent = v;
-  localStorage.setItem('yoga-bonus', v);
-  renderCustomers();
+  if (tab==='statistik') renderStats();
 }
 
 function showToast(msg) {
@@ -483,19 +413,14 @@ function showToast(msg) {
   t._t = setTimeout(() => t.classList.remove('show'), 2200);
 }
 
-// ── Init ─────────────────────────────────────────────────────────────────────
 const savedUrl = localStorage.getItem('yoga-sb-url');
 const savedKey = localStorage.getItem('yoga-sb-key');
 if (savedUrl && savedKey) {
   document.getElementById('sb-url').value = savedUrl;
   document.getElementById('sb-key').value = savedKey;
-  supabase_client = supabase.createClient(savedUrl, savedKey);
+  sb = supabase.createClient(savedUrl, savedKey);
   startApp();
 }
-
-document.getElementById('bonus-slider').value = bonusThreshold;
-document.getElementById('bonus-val').textContent = bonusThreshold;
-
 document.getElementById('new-name').addEventListener('keydown', e => {
   if (e.key === 'Enter') addCustomer();
 });
