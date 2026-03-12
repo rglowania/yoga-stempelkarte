@@ -7,7 +7,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
-    --teal-50: #E1F5EE; --teal-600: #0F6E56; --teal-700: #085041;
+    --teal-50: #E1F5EE; --teal-100: #9FE1CB; --teal-600: #0F6E56; --teal-700: #085041;
     --purple-50: #EEEDFE; --purple-600: #534AB7;
     --coral-50: #FAECE7; --coral-600: #993C1D;
     --blue-50: #E6F1FB; --blue-600: #185FA5;
@@ -19,7 +19,7 @@
     --bg: #FAFAF8; --surface: #FFFFFF; --border: rgba(0,0,0,0.1);
     --text: #1A1A18; --text-muted: #5F5E5A; --text-hint: #888780;
     --radius-md: 8px; --radius-lg: 12px; --radius-xl: 16px;
-    --stamp-size: 34px;
+    --stamp-size: 36px;
   }
   @media (prefers-color-scheme: dark) {
     :root {
@@ -30,6 +30,8 @@
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; }
+
+  /* Setup */
   #setup-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 1.5rem; }
   .setup-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-xl); padding: 2rem; max-width: 480px; width: 100%; }
   .setup-logo { width: 48px; height: 48px; background: var(--teal-50); border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 1.5rem; font-size: 24px; }
@@ -43,9 +45,11 @@
   .form-group { margin-bottom: 12px; }
   .form-group label { display: block; font-size: 13px; font-weight: 500; margin-bottom: 5px; }
   .form-group input { width: 100%; padding: 9px 12px; font-size: 14px; border: 0.5px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--text); outline: none; }
-  .form-group input:focus { border-color: var(--teal-600); box-shadow: 0 0 0 3px rgba(29,158,117,0.1); }
+  .form-group input:focus { border-color: var(--teal-600); box-shadow: 0 0 0 3px rgba(15,110,86,0.12); }
   .form-group .hint { font-size: 12px; color: var(--text-hint); margin-top: 4px; }
   #setup-error { color: var(--red-600); font-size: 13px; margin-top: 10px; display: none; padding: 8px 12px; background: var(--red-50); border-radius: var(--radius-md); }
+
+  /* Buttons */
   .btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 16px; font-size: 14px; font-weight: 500; border: 0.5px solid var(--border); border-radius: var(--radius-md); background: none; color: var(--text); cursor: pointer; transition: all 0.15s; }
   .btn:hover { background: var(--gray-100); }
   .btn:active { transform: scale(0.98); }
@@ -55,19 +59,31 @@
   .btn.danger:hover { background: var(--red-50); }
   .btn.full { width: 100%; justify-content: center; }
   .btn:disabled { opacity: 0.4; cursor: default; pointer-events: none; }
+
+  /* Icon button */
+  .icon-btn { width: 36px; height: 36px; border-radius: 50%; border: 0.5px solid var(--border); background: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; padding: 0; }
+  .icon-btn:hover { background: var(--gray-100); color: var(--text); }
+  .icon-btn svg { width: 18px; height: 18px; }
+
+  /* App */
   #app-screen { display: none; max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
   .app-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; }
   .app-header h1 { font-size: 20px; font-weight: 600; }
   .app-header .sub { font-size: 13px; color: var(--text-muted); margin-top: 2px; }
-  .conn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal-600); display: inline-block; margin-right: 5px; }
+  .conn-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--teal-600); display: inline-block; margin-right: 5px; animation: pulse 2.5s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.4} }
+
   .tabs { display: flex; gap: 2px; margin-bottom: 1.5rem; border-bottom: 0.5px solid var(--border); }
   .tab { padding: 8px 14px; font-size: 14px; cursor: pointer; border: none; background: none; color: var(--text-muted); border-bottom: 2px solid transparent; margin-bottom: -0.5px; }
   .tab.active { color: var(--text); border-bottom-color: var(--teal-600); font-weight: 500; }
+
   .add-form { background: var(--gray-50); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
   .add-form h3 { font-size: 14px; font-weight: 500; margin-bottom: 10px; }
   .form-row { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end; }
   .form-row .form-group { flex: 1; min-width: 120px; margin-bottom: 0; }
   .form-row select { width: 100%; padding: 9px 12px; font-size: 14px; border: 0.5px solid var(--border); border-radius: var(--radius-md); background: var(--surface); color: var(--text); }
+
+  /* Customer cards */
   .customer-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 10px; }
   .customer-row { display: flex; align-items: center; gap: 12px; }
   .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 14px; flex-shrink: 0; }
@@ -77,38 +93,85 @@
   .badge.green { background: var(--green-50); color: var(--green-600); }
   .badge.amber { background: var(--amber-50); color: var(--amber-600); }
   .badge.blue { background: var(--blue-50); color: var(--blue-600); }
-  .stamps-grid { display: flex; gap: 6px; flex-wrap: wrap; margin: 12px 0 8px; }
-  .stamp-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; }
-  .stamp { width: var(--stamp-size); height: var(--stamp-size); border-radius: 50%; border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; }
-  .stamp.filled { background: var(--teal-600); border-color: var(--teal-600); color: white; }
-  .stamp.filled::after { content: "✓"; font-size: 13px; }
-  .stamp.empty { background: var(--gray-50); }
+
+  /* Stamps */
+  .stamps-grid { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 10px; }
+  .stamp-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; }
+  .stamp {
+    width: var(--stamp-size); height: var(--stamp-size);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    position: relative; transition: transform 0.15s;
+  }
+  .stamp.empty {
+    background: var(--gray-50);
+    border: 1.5px dashed var(--border);
+  }
+  .stamp.filled {
+    background: linear-gradient(145deg, #1D9E75, #0F6E56);
+    border: none;
+    box-shadow: 0 2px 6px rgba(15,110,86,0.35), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .stamp.filled::before {
+    content: '';
+    position: absolute;
+    inset: 3px;
+    border-radius: 50%;
+    border: 1.5px solid rgba(255,255,255,0.25);
+  }
+  .stamp.filled::after {
+    content: '✿';
+    font-size: 15px;
+    color: white;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.2);
+    position: relative; z-index: 1;
+  }
   .stamp-date { font-size: 9px; color: var(--text-hint); white-space: pre; text-align: center; line-height: 1.3; min-height: 22px; }
-  .progress-bar { height: 3px; background: var(--gray-100); border-radius: 2px; margin-bottom: 10px; overflow: hidden; }
-  .progress-fill { height: 100%; background: var(--teal-600); border-radius: 2px; transition: width 0.3s ease; }
+
+  .progress-bar { height: 4px; background: var(--gray-100); border-radius: 2px; margin-bottom: 12px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #1D9E75, #0F6E56); border-radius: 2px; transition: width 0.4s ease; }
   .card-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+
+  /* Stats */
   .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 1.5rem; }
   .stat-card { background: var(--gray-50); border-radius: var(--radius-md); padding: 12px; }
   .stat-label { font-size: 12px; color: var(--text-muted); }
   .stat-value { font-size: 24px; font-weight: 600; margin-top: 4px; }
-  .settings-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 12px; }
-  .settings-card h3 { font-size: 15px; font-weight: 500; margin-bottom: 8px; }
-  .settings-card p { font-size: 13px; color: var(--text-muted); margin-bottom: 12px; line-height: 1.5; }
+
+  /* Settings drawer */
+  .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.3); z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .drawer-overlay.open { opacity: 1; pointer-events: all; }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(340px, 92vw); background: var(--surface); z-index: 51; transform: translateX(100%); transition: transform 0.25s ease; display: flex; flex-direction: column; }
+  .drawer.open { transform: translateX(0); }
+  .drawer-header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 1.25rem 1rem; border-bottom: 0.5px solid var(--border); }
+  .drawer-header h2 { font-size: 17px; font-weight: 600; }
+  .drawer-body { padding: 1.25rem; flex: 1; overflow-y: auto; }
+  .drawer-section { margin-bottom: 1.5rem; }
+  .drawer-section h3 { font-size: 12px; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; }
+  .info-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .info-row:last-child { border-bottom: none; }
+  .info-row .label { color: var(--text-muted); }
+  .info-row .val { font-weight: 500; }
+
+  /* Toast */
   .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--gray-800); color: white; padding: 9px 18px; border-radius: 20px; font-size: 13px; opacity: 0; transition: all 0.25s; pointer-events: none; white-space: nowrap; z-index: 100; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
   .loading { text-align: center; padding: 2rem; color: var(--text-muted); font-size: 14px; }
   .empty { text-align: center; padding: 2.5rem 1rem; color: var(--text-muted); font-size: 14px; }
   .spinner { display: inline-block; width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--teal-600); border-radius: 50%; animation: spin 0.6s linear infinite; margin-right: 8px; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
+
   @media (max-width: 480px) {
     .stat-grid { grid-template-columns: repeat(2, 1fr); }
     .form-row { flex-direction: column; }
-    :root { --stamp-size: 28px; }
+    :root { --stamp-size: 30px; }
   }
 </style>
 </head>
 <body>
 
+<!-- Setup -->
 <div id="setup-screen">
   <div class="setup-card">
     <div class="setup-logo">🧘</div>
@@ -133,19 +196,26 @@
   </div>
 </div>
 
+<!-- App -->
 <div id="app-screen">
   <div class="app-header">
     <div>
       <h1>🧘 Stempelkarten</h1>
       <div class="sub"><span class="conn-dot"></span>Online gespeichert</div>
     </div>
-    <button class="btn" onclick="logout()" style="font-size:13px;padding:6px 12px;">Trennen</button>
+    <button class="icon-btn" onclick="openDrawer()" title="Einstellungen" aria-label="Einstellungen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="12" cy="12" r="3"/>
+        <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+      </svg>
+    </button>
   </div>
+
   <div class="tabs">
     <button class="tab active" onclick="showTab('kunden')">Kunden</button>
     <button class="tab" onclick="showTab('statistik')">Übersicht</button>
-    <button class="tab" onclick="showTab('einstellungen')">Einstellungen</button>
   </div>
+
   <div id="tab-kunden">
     <div class="add-form">
       <h3>Neuen Kunden hinzufügen</h3>
@@ -163,15 +233,32 @@
     </div>
     <div id="customer-list"><div class="loading"><span class="spinner"></span>Lädt…</div></div>
   </div>
+
   <div id="tab-statistik" style="display:none;">
     <div class="stat-grid" id="stats-grid"></div>
     <div id="stats-detail"></div>
   </div>
-  <div id="tab-einstellungen" style="display:none;">
-    <div class="settings-card">
+</div>
+
+<!-- Settings Drawer -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <h2>Einstellungen</h2>
+    <button class="icon-btn" onclick="closeDrawer()" aria-label="Schließen">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+    </button>
+  </div>
+  <div class="drawer-body">
+    <div class="drawer-section">
       <h3>Verbindung</h3>
-      <p>Die App ist mit deiner Supabase-Datenbank verbunden. Alle Daten werden dort sicher gespeichert.</p>
-      <button class="btn danger" onclick="logout()">Verbindung trennen</button>
+      <div class="info-row"><span class="label">Status</span><span class="val" style="color:var(--teal-600);">● Verbunden</span></div>
+      <div class="info-row"><span class="label">Datenbank</span><span class="val">Supabase</span></div>
+    </div>
+    <div class="drawer-section">
+      <h3>Konto</h3>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:12px;line-height:1.5;">Beim Logout werden die gespeicherten Zugangsdaten von diesem Gerät entfernt. Die Kundendaten in der Datenbank bleiben erhalten.</p>
+      <button class="btn danger full" onclick="logout()">Logout</button>
     </div>
   </div>
 </div>
@@ -191,6 +278,15 @@ function formatDate(iso) {
   const h   = String(d.getHours()).padStart(2,'0');
   const min = String(d.getMinutes()).padStart(2,'0');
   return day+'.'+mon+'\n'+h+':'+min;
+}
+
+function openDrawer() {
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+}
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
 }
 
 function connectSupabase() {
@@ -222,6 +318,7 @@ function showSetupError(msg) {
 }
 
 function logout() {
+  if (!confirm('Wirklich ausloggen?\n\nDeine Kundendaten bleiben in der Datenbank gespeichert – nur die Verbindung auf diesem Gerät wird getrennt.')) return;
   localStorage.removeItem('yoga-sb-url');
   localStorage.removeItem('yoga-sb-key');
   location.reload();
@@ -355,20 +452,19 @@ function renderCustomers() {
     }).join('');
 
     return '<div class="customer-card">'
-      + '<div class="customer-row">'
-      + '<div class="avatar" style="'+avatarStyle(c.color)+'">'+initials(c.name)+'</div>'
-      + '<div style="flex:1;min-width:0;">'
-      + '<div class="customer-name">'+c.name+badge+'</div>'
-      + '<div class="customer-meta">'+c.package+'er-Karte · '+count+' von '+c.package+' Einheiten</div>'
-      + '</div></div>'
-      + '<div class="stamps-grid">'+stampsHtml+'</div>'
-      + '<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>'
-      + '<div class="card-actions">'
-      + '<button class="btn primary" onclick="addStamp(\''+c.id+'\')" '+(full?'disabled':'')+'>+ Stempel</button>'
-      + (full ? '<button class="btn" onclick="redeemCard(\''+c.id+'\')">Karte einlösen</button>' : '')
-      + '<button class="btn" onclick="removeStamp(\''+c.id+'\')">– Entfernen</button>'
-      + '<button class="btn danger" onclick="deleteCustomer(\''+c.id+'\')" style="margin-left:auto;">Löschen</button>'
-      + '</div></div>';
+      +'<div class="customer-row">'
+      +'<div class="avatar" style="'+avatarStyle(c.color)+'">'+initials(c.name)+'</div>'
+      +'<div style="flex:1;min-width:0;"><div class="customer-name">'+c.name+badge+'</div>'
+      +'<div class="customer-meta">'+c.package+'er-Karte · '+count+' von '+c.package+' Einheiten</div></div>'
+      +'</div>'
+      +'<div class="stamps-grid">'+stampsHtml+'</div>'
+      +'<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>'
+      +'<div class="card-actions">'
+      +'<button class="btn primary" onclick="addStamp(\''+c.id+'\')" '+(full?'disabled':'')+'>+ Stempel</button>'
+      +(full ? '<button class="btn" onclick="redeemCard(\''+c.id+'\')">Karte einlösen</button>' : '')
+      +'<button class="btn" onclick="removeStamp(\''+c.id+'\')">– Entfernen</button>'
+      +'<button class="btn danger" onclick="deleteCustomer(\''+c.id+'\')" style="margin-left:auto;">Löschen</button>'
+      +'</div></div>';
   }).join('');
 }
 
@@ -396,11 +492,11 @@ function renderStats() {
 }
 
 function showTab(tab) {
-  ['kunden','statistik','einstellungen'].forEach(t => {
+  ['kunden','statistik'].forEach(t => {
     document.getElementById('tab-'+t).style.display = t===tab ? '' : 'none';
   });
   document.querySelectorAll('.tab').forEach((el,i) => {
-    el.classList.toggle('active', ['kunden','statistik','einstellungen'][i]===tab);
+    el.classList.toggle('active', ['kunden','statistik'][i]===tab);
   });
   if (tab==='statistik') renderStats();
 }
