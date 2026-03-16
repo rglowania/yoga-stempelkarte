@@ -4,195 +4,341 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Stempelkarten</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600&family=IBM+Plex+Sans:wght@300;400;500&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Jost:wght@300;400;500&display=swap" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
   :root {
-    color-scheme: light dark;
-    --accent:        #2e7a50;
-    --accent-light:  #5d9e7a;
-    --accent-dim:    rgba(46,122,80,0.13);
-    --accent-border: rgba(46,122,80,0.32);
-    --bg:            #f0f7f3;
-    --surface:       #ffffff;
-    --surface-2:     #e8f2ec;
-    --border:        rgba(0,0,0,0.08);
-    --border-strong: rgba(0,0,0,0.14);
-    --text:          #0f1f16;
-    --text-muted:    #4a6357;
-    --text-hint:     #8aaa97;
-    --success-bg: #e8f5ee; --success-fg: #1a6e3c;
-    --warn-bg:    #fdf4e3; --warn-fg:    #8a6000;
-    --danger-bg:  #fdecea; --danger-fg:  #b32d2d;
-    --info-bg:    #e8f0fb; --info-fg:    #1a4a8a;
-    --dot-color:  rgba(46,122,80,0.10);
-    --shadow:     0 2px 12px rgba(0,0,0,0.06);
-    --radius-sm: 6px; --radius-md: 10px; --radius-lg: 14px; --radius-xl: 20px;
-    --stamp-size: 36px;
+    --cream:       #f7f3ee;
+    --cream-2:     #ede8e0;
+    --cream-3:     #e2dbd0;
+    --warm-white:  #fdfaf6;
+    --border:      rgba(120,100,80,0.14);
+    --border-mid:  rgba(120,100,80,0.22);
+    --text:        #2a2218;
+    --text-muted:  #7a6e60;
+    --text-hint:   #b0a594;
+    --accent:      #5c7a5e;
+    --accent-dim:  rgba(92,122,94,0.10);
+    --accent-dark: #3d5c3f;
+    --warn:        #8a6000;
+    --warn-bg:     #fdf4e3;
+    --danger:      #8a3030;
+    --danger-bg:   #fdecea;
+    --expired:     #6b5a4e;
+    --expired-bg:  #f0e8e0;
+    --shadow:      0 2px 16px rgba(80,60,40,0.07);
+    --shadow-lg:   0 8px 32px rgba(80,60,40,0.12);
+    --radius:      12px;
+    --radius-lg:   18px;
+    --stamp-size:  34px;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --accent: #5d9e7a; --accent-light: #7dbf97;
-      --accent-dim: rgba(93,158,122,0.14); --accent-border: rgba(93,158,122,0.28);
-      --bg: #0c1410; --surface: #131a16; --surface-2: #1a2420;
-      --border: rgba(255,255,255,0.07); --border-strong: rgba(255,255,255,0.13);
-      --text: #e8f2ec; --text-muted: #7aaa8e; --text-hint: #4a6e58;
-      --success-bg: #0d2b1a; --success-fg: #5daa7a;
-      --warn-bg: #2a1f08; --warn-fg: #c8a040;
-      --danger-bg: #2a0f0f; --danger-fg: #e07070;
-      --info-bg: #0d1a2e; --info-fg: #6090d0;
-      --dot-color: rgba(93,158,122,0.07);
-      --shadow: 0 2px 12px rgba(0,0,0,0.3);
-    }
-  }
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
   body {
-    font-family: 'IBM Plex Sans', system-ui, sans-serif;
-    font-size: 15px; line-height: 1.65;
-    background: var(--bg); color: var(--text); min-height: 100vh;
-    background-image: radial-gradient(circle, var(--dot-color) 1px, transparent 1px);
-    background-size: 22px 22px;
+    font-family: 'Jost', system-ui, sans-serif;
+    font-weight: 300;
+    background: var(--cream);
+    color: var(--text);
+    min-height: 100vh;
+    font-size: 15px;
+    line-height: 1.65;
   }
-  h1,h2,h3 { font-family: 'Playfair Display', Georgia, serif; font-weight: 500; line-height: 1.25; }
-  h1 { font-size: 24px; } h2 { font-size: 18px; } h3 { font-size: 15px; }
-  code { font-family: 'IBM Plex Mono', monospace; font-size: 12px; background: var(--surface-2); padding: 1px 5px; border-radius: var(--radius-sm); }
+
+  h1, h2, h3 {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 400;
+    line-height: 1.2;
+  }
+  h1 { font-size: 30px; }
+  h2 { font-size: 21px; }
+  h3 { font-size: 16px; font-family: 'Jost', sans-serif; font-weight: 500; }
+
+  /* ── Login ── */
+  #login-screen {
+    display: flex; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 1.5rem;
+    background: var(--warm-white);
+  }
+  .login-card {
+    background: var(--warm-white); border: 0.5px solid var(--border-mid);
+    border-radius: var(--radius-lg); padding: 2.5rem 2rem;
+    max-width: 400px; width: 100%; box-shadow: var(--shadow-lg);
+  }
+  .login-eyebrow {
+    font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--accent);
+    margin-bottom: 10px;
+  }
+  .login-card h1 { margin-bottom: 6px; }
+  .login-card > p { font-size: 14px; color: var(--text-muted); margin-bottom: 2rem; }
+  #login-error {
+    color: var(--danger); font-size: 13px; display: none;
+    padding: 8px 12px; background: var(--danger-bg);
+    border-radius: 8px; margin-top: 10px;
+  }
 
   /* ── Setup ── */
-  #setup-screen { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 1.5rem; }
-  .setup-card { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius-xl); padding: 2rem; max-width: 460px; width: 100%; box-shadow: var(--shadow); }
-  .setup-eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 8px; }
+  #setup-screen {
+    display: none; align-items: center; justify-content: center;
+    min-height: 100vh; padding: 1.5rem;
+  }
+  .setup-card {
+    background: var(--warm-white); border: 0.5px solid var(--border-mid);
+    border-radius: var(--radius-lg); padding: 2.5rem 2rem;
+    max-width: 460px; width: 100%; box-shadow: var(--shadow-lg);
+  }
+  .setup-eyebrow {
+    font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 500;
+    letter-spacing: 2px; text-transform: uppercase; color: var(--accent);
+    margin-bottom: 10px;
+  }
   .setup-card h1 { margin-bottom: 6px; }
-  .setup-card > p { font-size: 14px; color: var(--text-muted); margin-bottom: 1.5rem; line-height: 1.6; }
-  .setup-steps { background: var(--surface-2); border-radius: var(--radius-lg); padding: 1rem 1.25rem; margin-bottom: 1.5rem; }
-  .setup-steps-title { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--text-hint); margin-bottom: 10px; }
-  .setup-step { display: flex; gap: 10px; align-items: flex-start; margin-bottom: 8px; font-size: 13px; color: var(--text-muted); }
-  .setup-step-num { background: var(--accent-dim); color: var(--accent); width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 600; flex-shrink: 0; margin-top: 1px; font-family: 'IBM Plex Mono', monospace; }
-  #setup-error { color: var(--danger-fg); font-size: 13px; margin-top: 10px; display: none; padding: 8px 12px; background: var(--danger-bg); border-radius: var(--radius-md); }
+  .setup-card > p { font-size: 14px; color: var(--text-muted); margin-bottom: 1.5rem; }
+  .setup-hint-box {
+    background: var(--cream-2); border-radius: var(--radius); padding: 1rem 1.25rem;
+    margin-bottom: 1.5rem; font-size: 13px; color: var(--text-muted); line-height: 1.7;
+  }
+  .setup-hint-box strong { color: var(--text); font-weight: 500; }
+  .setup-hint-box code {
+    font-family: monospace; font-size: 12px;
+    background: var(--cream-3); padding: 1px 5px; border-radius: 4px;
+  }
+  #setup-error {
+    color: var(--danger); font-size: 13px; display: none;
+    padding: 8px 12px; background: var(--danger-bg);
+    border-radius: 8px; margin-top: 10px;
+  }
 
-  /* ── Form ── */
+  /* ── Form elements ── */
   .form-group { margin-bottom: 14px; }
-  .form-group label { display: block; font-size: 11px; font-weight: 500; letter-spacing: 0.5px; text-transform: uppercase; color: var(--text-hint); margin-bottom: 5px; font-family: 'IBM Plex Mono', monospace; }
-  .form-group input, .form-group select { width: 100%; padding: 9px 12px; font-size: 14px; font-family: 'IBM Plex Sans', sans-serif; background: var(--surface); color: var(--text); border: 0.5px solid var(--border-strong); border-radius: var(--radius-md); outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
-  .form-group input:focus, .form-group select:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+  .form-group label {
+    display: block; font-size: 11px; font-weight: 500;
+    letter-spacing: 1px; text-transform: uppercase;
+    color: var(--text-hint); margin-bottom: 5px;
+  }
+  .form-group input, .form-group select {
+    width: 100%; padding: 10px 13px; font-size: 14px;
+    font-family: 'Jost', sans-serif; font-weight: 300;
+    background: var(--warm-white); color: var(--text);
+    border: 0.5px solid var(--border-mid); border-radius: var(--radius);
+    outline: none; transition: border-color 0.15s, box-shadow 0.15s;
+    -webkit-appearance: none; appearance: none;
+  }
+  .form-group input:focus, .form-group select:focus {
+    border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim);
+  }
   .form-group .hint { font-size: 12px; color: var(--text-hint); margin-top: 5px; }
   .form-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; }
-  .form-row .form-group { flex: 1; min-width: 130px; margin-bottom: 0; }
+  .form-row .form-group { flex: 1; min-width: 120px; margin-bottom: 0; }
 
   /* ── Buttons ── */
-  .btn { display: inline-flex; align-items: center; gap: 7px; padding: 9px 18px; font-size: 14px; font-weight: 500; font-family: 'IBM Plex Sans', sans-serif; border: 0.5px solid var(--border-strong); border-radius: var(--radius-md); background: none; color: var(--text); cursor: pointer; transition: all 0.15s; }
-  .btn:hover { background: var(--surface-2); }
+  .btn {
+    display: inline-flex; align-items: center; gap: 7px;
+    padding: 10px 20px; font-size: 14px; font-weight: 400;
+    font-family: 'Jost', sans-serif; letter-spacing: 0.3px;
+    border: 0.5px solid var(--border-mid); border-radius: var(--radius);
+    background: none; color: var(--text); cursor: pointer; transition: all 0.15s;
+  }
+  .btn:hover { background: var(--cream-2); }
   .btn:active { transform: scale(0.98); }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  .btn.primary:hover { opacity: 0.88; }
-  .btn.danger { color: var(--danger-fg); border-color: rgba(179,45,45,0.28); }
+  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 400; }
+  .btn.primary:hover { background: var(--accent-dark); border-color: var(--accent-dark); }
+  .btn.danger { color: var(--danger); border-color: rgba(138,48,48,0.25); }
   .btn.danger:hover { background: var(--danger-bg); }
+  .btn.warn { color: var(--warn); border-color: rgba(138,96,0,0.25); font-size: 13px; padding: 7px 14px; }
+  .btn.warn:hover { background: var(--warn-bg); }
   .btn.full { width: 100%; justify-content: center; }
   .btn:disabled { opacity: 0.35; pointer-events: none; }
-  .icon-btn { width: 36px; height: 36px; border-radius: 50%; border: 0.5px solid var(--border); background: none; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
-  .icon-btn:hover { background: var(--surface-2); color: var(--text); }
+  .btn.sm { padding: 6px 12px; font-size: 13px; }
+  .icon-btn {
+    width: 36px; height: 36px; border-radius: 50%;
+    border: 0.5px solid var(--border); background: none;
+    color: var(--text-muted); cursor: pointer;
+    display: flex; align-items: center; justify-content: center; transition: all 0.15s;
+  }
+  .icon-btn:hover { background: var(--cream-2); color: var(--text); }
   .icon-btn svg { width: 17px; height: 17px; }
 
   /* ── App ── */
-  #app-screen { display: none; max-width: 700px; margin: 0 auto; padding: 1.75rem 1.25rem 5rem; }
+  #app-screen { display: none; max-width: 680px; margin: 0 auto; padding: 1.75rem 1.25rem 5rem; }
   .app-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 1.75rem; }
-  .app-header .eyebrow { font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); margin-bottom: 4px; }
-  .sub { font-size: 13px; color: var(--text-muted); margin-top: 3px; }
-  .conn-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); display: inline-block; margin-right: 5px; animation: pulse 2.5s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.35} }
+  .app-eyebrow {
+    font-size: 11px; font-weight: 500; letter-spacing: 2px;
+    text-transform: uppercase; color: var(--accent); margin-bottom: 4px;
+  }
+  .app-sub { font-size: 13px; color: var(--text-muted); margin-top: 4px; display: flex; align-items: center; gap: 6px; }
+  .conn-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--accent); animation: pulse 2.5s ease-in-out infinite; flex-shrink: 0; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.3} }
+
+  /* ── Toolbar ── */
+  .toolbar { display: flex; gap: 8px; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+  .search-wrap { position: relative; flex: 1; min-width: 180px; }
+  .search-wrap svg { position: absolute; left: 11px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; color: var(--text-hint); pointer-events: none; }
+  .search-wrap input { padding-left: 34px; width: 100%; padding-top: 9px; padding-bottom: 9px; font-size: 14px; font-family: 'Jost', sans-serif; font-weight: 300; background: var(--warm-white); color: var(--text); border: 0.5px solid var(--border-mid); border-radius: var(--radius); outline: none; transition: border-color 0.15s, box-shadow 0.15s; }
+  .search-wrap input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-dim); }
+  .filter-group { display: flex; background: var(--cream-2); border-radius: var(--radius); padding: 3px; gap: 2px; }
+  .filter-btn { padding: 6px 12px; font-size: 12px; font-weight: 400; font-family: 'Jost', sans-serif; border: none; background: none; color: var(--text-muted); border-radius: 9px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .filter-btn.active { background: var(--warm-white); color: var(--text); box-shadow: 0 1px 4px rgba(80,60,40,0.1); font-weight: 500; }
 
   /* ── Tabs ── */
-  .tabs { display: flex; gap: 2px; border-bottom: 0.5px solid var(--border-strong); margin-bottom: 1.5rem; }
-  .tab { padding: 8px 16px; font-size: 14px; font-weight: 400; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); cursor: pointer; margin-bottom: -0.5px; font-family: 'IBM Plex Sans', sans-serif; transition: color 0.15s; }
+  .tabs { display: flex; gap: 2px; border-bottom: 0.5px solid var(--border-mid); margin-bottom: 1.5rem; }
+  .tab { padding: 9px 16px; font-size: 14px; font-weight: 300; background: none; border: none; border-bottom: 2px solid transparent; color: var(--text-muted); cursor: pointer; margin-bottom: -0.5px; font-family: 'Jost', sans-serif; transition: color 0.15s; }
   .tab:hover { color: var(--text); }
-  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 500; }
+  .tab.active { color: var(--accent); border-bottom-color: var(--accent); font-weight: 400; }
 
   /* ── Add form ── */
-  .add-form { background: var(--surface); border: 0.5px solid var(--border-strong); border-radius: var(--radius-lg); padding: 1.1rem 1.4rem; margin-bottom: 1.25rem; box-shadow: var(--shadow); }
-  .add-form-label { font-family: 'IBM Plex Mono', monospace; font-size: 11px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--text-hint); margin-bottom: 10px; }
+  .add-form {
+    background: var(--warm-white); border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1.1rem 1.4rem;
+    margin-bottom: 1.25rem; box-shadow: var(--shadow);
+  }
+  .add-form-label {
+    font-size: 10px; font-weight: 500; letter-spacing: 1.5px;
+    text-transform: uppercase; color: var(--text-hint); margin-bottom: 12px;
+  }
 
   /* ── Customer cards ── */
-  .customer-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.1rem 1.4rem; margin-bottom: 10px; box-shadow: var(--shadow); transition: border-color 0.2s; }
-  .customer-card:hover { border-color: var(--accent-border); }
+  .customer-card {
+    background: var(--warm-white); border: 0.5px solid var(--border);
+    border-radius: var(--radius-lg); padding: 1.1rem 1.4rem;
+    margin-bottom: 10px; box-shadow: var(--shadow); transition: border-color 0.2s;
+  }
+  .customer-card:hover { border-color: var(--border-mid); }
+  .customer-card.is-expired { border-color: rgba(107,90,78,0.25); background: #faf7f4; }
+  .customer-card.is-expiring { border-color: rgba(138,96,0,0.2); }
+
   .customer-row { display: flex; align-items: center; gap: 12px; }
-  .avatar { width: 40px; height: 40px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px; flex-shrink: 0; font-family: 'IBM Plex Mono', monospace; background: var(--accent-dim); color: var(--accent); }
-  .customer-name { font-family: 'Playfair Display', serif; font-size: 16px; font-weight: 500; }
-  .customer-meta { font-size: 12px; color: var(--text-muted); margin-top: 2px; font-family: 'IBM Plex Mono', monospace; }
-  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 500; margin-left: 7px; font-family: 'IBM Plex Mono', monospace; }
-  .badge.success { background: var(--success-bg); color: var(--success-fg); }
-  .badge.warn    { background: var(--warn-bg);    color: var(--warn-fg); }
-  .badge.info    { background: var(--info-bg);    color: var(--info-fg); }
+  .avatar {
+    width: 40px; height: 40px; border-radius: 50%; flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 400; font-size: 13px; font-family: 'Cormorant Garamond', serif;
+    background: var(--cream-2); color: var(--accent); letter-spacing: 0.5px;
+    border: 0.5px solid var(--border);
+  }
+  .customer-name { font-family: 'Cormorant Garamond', serif; font-size: 18px; font-weight: 400; line-height: 1.2; }
+  .customer-meta { font-size: 12px; color: var(--text-muted); margin-top: 3px; letter-spacing: 0.2px; }
+
+  .badge { display: inline-block; padding: 2px 8px; border-radius: 20px; font-size: 10px; font-weight: 500; margin-left: 7px; font-family: 'Jost', sans-serif; letter-spacing: 0.3px; }
+  .badge.active  { background: rgba(92,122,94,0.12); color: var(--accent-dark); }
+  .badge.full    { background: rgba(30,70,160,0.10); color: #1e46a0; }
+  .badge.expiring{ background: var(--warn-bg); color: var(--warn); }
+  .badge.expired { background: var(--expired-bg); color: var(--expired); }
+  .badge.extended{ background: rgba(92,122,94,0.08); color: var(--accent); border: 0.5px solid rgba(92,122,94,0.3); }
+
+  /* ── Validity bar ── */
+  .validity-row { display: flex; align-items: center; gap: 10px; margin: 10px 0 6px; }
+  .validity-label { font-size: 11px; color: var(--text-hint); white-space: nowrap; }
+  .validity-bar { flex: 1; height: 3px; background: var(--cream-2); border-radius: 2px; overflow: hidden; }
+  .validity-fill { height: 100%; border-radius: 2px; transition: width 0.4s ease; }
+  .validity-fill.ok      { background: var(--accent); }
+  .validity-fill.warn    { background: #c89040; }
+  .validity-fill.expired { background: #b08070; }
+  .validity-days { font-size: 11px; font-family: 'Jost', sans-serif; white-space: nowrap; }
+  .validity-days.ok      { color: var(--accent); }
+  .validity-days.warn    { color: var(--warn); }
+  .validity-days.expired { color: var(--expired); }
 
   /* ── Stamps ── */
-  .stamps-grid { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 10px; align-items: flex-start; }
-  .stamp-wrap { display: flex; flex-direction: column; align-items: center; gap: 4px; flex-shrink: 0; width: var(--stamp-size); }
-  .stamp { width: var(--stamp-size); height: var(--stamp-size); min-width: var(--stamp-size); min-height: var(--stamp-size); max-width: var(--stamp-size); max-height: var(--stamp-size); aspect-ratio: 1 / 1; border-radius: 50%; display: flex; align-items: center; justify-content: center; position: relative; flex-shrink: 0; overflow: hidden; }
-  .stamp.empty { background: var(--surface-2); border: 1.5px dashed var(--border-strong); }
-  .stamp.filled {
-    background: linear-gradient(145deg, var(--accent-light), var(--accent));
-    border: none;
-    box-shadow: 0 2px 7px var(--accent-dim), inset 0 1px 0 rgba(255,255,255,0.22);
+  .stamps-grid { display: flex; gap: 7px; flex-wrap: wrap; margin: 12px 0 8px; align-items: flex-start; }
+  .stamp-wrap { display: flex; flex-direction: column; align-items: center; gap: 3px; flex-shrink: 0; width: var(--stamp-size); }
+  .stamp {
+    width: var(--stamp-size); height: var(--stamp-size);
+    min-width: var(--stamp-size); min-height: var(--stamp-size);
+    max-width: var(--stamp-size); max-height: var(--stamp-size);
+    aspect-ratio: 1 / 1;
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    position: relative; flex-shrink: 0; overflow: hidden;
   }
-  .stamp.filled::before { content: ''; position: absolute; inset: 3px; border-radius: 50%; border: 1.5px solid rgba(255,255,255,0.22); }
-  .stamp.filled::after { content: '✦'; font-size: 14px; color: white; text-shadow: 0 1px 3px rgba(0,0,0,0.2); position: relative; z-index: 1; }
-  .stamp-date { font-size: 9px; color: var(--text-hint); white-space: pre; text-align: center; line-height: 1.3; min-height: 22px; font-family: 'IBM Plex Mono', monospace; }
+  .stamp.empty { background: var(--cream-2); border: 1.5px dashed var(--cream-3); }
+  .stamp.filled {
+    background: radial-gradient(circle at 35% 35%, #7aaa7c, var(--accent-dark));
+    border: none;
+    box-shadow: 0 2px 8px rgba(60,90,62,0.3), inset 0 1px 0 rgba(255,255,255,0.2);
+  }
+  .stamp.filled::before { content: ''; position: absolute; inset: 3px; border-radius: 50%; border: 1px solid rgba(255,255,255,0.2); }
+  .stamp.filled::after { content: '✦'; font-size: 13px; color: rgba(255,255,255,0.92); text-shadow: 0 1px 2px rgba(0,0,0,0.15); position: relative; z-index: 1; }
+  .stamp.expired-stamp { background: var(--cream-3); border: none; }
+  .stamp.expired-stamp::after { content: '✦'; font-size: 13px; color: var(--text-hint); position: relative; z-index: 1; }
+  .stamp-date { font-size: 9px; color: var(--text-hint); white-space: pre; text-align: center; line-height: 1.3; min-height: 20px; font-family: 'Jost', sans-serif; font-weight: 300; }
 
   /* ── Progress ── */
-  .progress-bar { height: 3px; background: var(--surface-2); border-radius: 2px; margin-bottom: 12px; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent-light), var(--accent)); border-radius: 2px; transition: width 0.4s ease; }
+  .progress-bar { height: 3px; background: var(--cream-2); border-radius: 2px; margin-bottom: 12px; overflow: hidden; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, #7aaa7c, var(--accent-dark)); border-radius: 2px; transition: width 0.4s ease; }
 
-  .card-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+  .card-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 
   /* ── Stats ── */
   .stat-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 10px; margin-bottom: 1.5rem; }
-  .stat-card { background: var(--surface); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 14px 16px; box-shadow: var(--shadow); }
-  .stat-label { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 0.8px; text-transform: uppercase; color: var(--text-hint); }
-  .stat-value { font-family: 'Playfair Display', serif; font-size: 26px; font-weight: 500; margin-top: 4px; }
+  .stat-card { background: var(--warm-white); border: 0.5px solid var(--border); border-radius: var(--radius); padding: 14px 16px; box-shadow: var(--shadow); }
+  .stat-label { font-size: 10px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--text-hint); }
+  .stat-value { font-family: 'Cormorant Garamond', serif; font-size: 28px; font-weight: 400; margin-top: 4px; }
 
   /* ── Drawer ── */
-  .drawer-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.35); z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .drawer-overlay { position: fixed; inset: 0; background: rgba(40,25,10,0.35); z-index: 50; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
   .drawer-overlay.open { opacity: 1; pointer-events: all; }
-  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(320px, 92vw); background: var(--surface); z-index: 51; transform: translateX(100%); transition: transform 0.25s ease; display: flex; flex-direction: column; border-left: 0.5px solid var(--border-strong); }
+  .drawer { position: fixed; top: 0; right: 0; bottom: 0; width: min(320px,92vw); background: var(--warm-white); z-index: 51; transform: translateX(100%); transition: transform 0.25s ease; display: flex; flex-direction: column; border-left: 0.5px solid var(--border-mid); }
   .drawer.open { transform: translateX(0); }
   .drawer-header { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem; border-bottom: 0.5px solid var(--border); }
   .drawer-body { padding: 1.25rem; flex: 1; overflow-y: auto; }
   .drawer-section { margin-bottom: 1.75rem; }
-  .drawer-section-title { font-family: 'IBM Plex Mono', monospace; font-size: 10px; font-weight: 500; letter-spacing: 1px; text-transform: uppercase; color: var(--text-hint); margin-bottom: 10px; }
-  .info-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
+  .drawer-section-title { font-size: 10px; font-weight: 500; letter-spacing: 1.5px; text-transform: uppercase; color: var(--text-hint); margin-bottom: 10px; }
+  .info-row { display: flex; justify-content: space-between; align-items: center; padding: 9px 0; border-bottom: 0.5px solid var(--border); font-size: 13px; }
   .info-row:last-child { border-bottom: none; }
   .info-row .ilabel { color: var(--text-muted); }
-  .info-row .ival { font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 12px; }
+  .info-row .ival { font-weight: 500; font-size: 12px; }
 
   /* ── Toast ── */
-  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(16px); background: var(--text); color: var(--bg); padding: 9px 18px; border-radius: 20px; font-size: 12px; opacity: 0; transition: all 0.25s; pointer-events: none; white-space: nowrap; z-index: 200; font-family: 'IBM Plex Mono', monospace; }
+  .toast { position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%) translateY(16px); background: var(--text); color: var(--cream); padding: 9px 20px; border-radius: 20px; font-size: 12px; opacity: 0; transition: all 0.25s; pointer-events: none; white-space: nowrap; z-index: 200; font-family: 'Jost', sans-serif; letter-spacing: 0.3px; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
 
-  .spinner { display: inline-block; width: 16px; height: 16px; border: 2px solid var(--border-strong); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; }
+  .spinner { display: inline-block; width: 16px; height: 16px; border: 1.5px solid var(--border-mid); border-top-color: var(--accent); border-radius: 50%; animation: spin 0.6s linear infinite; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
   .loading { text-align: center; padding: 2.5rem; color: var(--text-muted); font-size: 14px; }
-  .empty { text-align: center; padding: 3rem 1rem; color: var(--text-hint); font-size: 14px; font-family: 'IBM Plex Mono', monospace; }
-  .footer { text-align: center; font-size: 11px; color: var(--text-hint); font-family: 'IBM Plex Mono', monospace; margin-top: 3rem; padding-top: 1.25rem; border-top: 0.5px solid var(--border); }
+  .empty { text-align: center; padding: 3rem 1rem; color: var(--text-hint); font-size: 14px; font-family: 'Cormorant Garamond', serif; font-size: 17px; }
+
+  .footer { text-align: center; font-size: 11px; color: var(--text-hint); margin-top: 3rem; padding-top: 1.25rem; border-top: 0.5px solid var(--border); letter-spacing: 0.5px; }
 
   #theme-toggle { position: fixed; bottom: 1.25rem; right: 1.25rem; z-index: 10; }
 
   @media (max-width: 480px) {
     .stat-grid { grid-template-columns: repeat(2,1fr); }
-    .form-row { flex-direction: column; }
     :root { --stamp-size: 30px; }
+    .form-row { flex-direction: column; }
+    .toolbar { gap: 6px; }
+    .filter-btn { padding: 5px 9px; font-size: 11px; }
   }
 </style>
 </head>
 <body>
 
+<!-- Login -->
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-eyebrow">Stempelkarten</div>
+    <h1>Willkommen</h1>
+    <p>Bitte melde dich mit deinem Passwort an.</p>
+    <div class="form-group">
+      <label>Passwort</label>
+      <input type="password" id="login-pw" placeholder="••••••••" />
+    </div>
+    <div id="login-error"></div>
+    <button class="btn primary full" onclick="doLogin()" style="margin-top:6px;">Anmelden</button>
+    <p style="font-size:12px;color:var(--text-hint);margin-top:14px;text-align:center;">
+      Noch kein Passwort? <a href="#" onclick="showSetup()" style="color:var(--accent);text-decoration:none;">Einrichtung starten</a>
+    </p>
+  </div>
+</div>
+
 <!-- Setup -->
 <div id="setup-screen">
   <div class="setup-card">
-    <div class="setup-eyebrow">Stempelkarten</div>
-    <h1>Einrichtung</h1>
-    <p>Verbinde die App mit deiner Supabase-Datenbank für sichere Online-Speicherung.</p>
-    <div class="setup-steps">
-      <div class="setup-steps-title">Zugangsdaten</div>
-      <div class="setup-step"><div class="setup-step-num">1</div><div>Supabase → Project Settings → API</div></div>
-      <div class="setup-step"><div class="setup-step-num">2</div><div><strong>Project URL</strong> und <strong>anon public</strong> Key kopieren</div></div>
+    <div class="setup-eyebrow">Einrichtung</div>
+    <h1>Verbindung herstellen</h1>
+    <p>Einmalig Supabase-Zugangsdaten und ein Passwort festlegen.</p>
+    <div class="setup-hint-box">
+      <strong>Supabase Project URL &amp; Anon Key</strong> findest du unter<br>
+      Project Settings → API → <code>Project URL</code> + <code>anon public</code>
     </div>
     <div class="form-group">
       <label>Supabase Project URL</label>
@@ -201,10 +347,17 @@
     <div class="form-group">
       <label>Supabase Anon Key</label>
       <input type="text" id="sb-key" placeholder="eyJhbGci..." />
-      <div class="hint"><code>anon public</code> Key verwenden – nicht <code>service_role</code>.</div>
+    </div>
+    <div class="form-group">
+      <label>Passwort festlegen</label>
+      <input type="password" id="setup-pw" placeholder="Mindestens 6 Zeichen" />
+      <div class="hint">Dieses Passwort schützt den Zugang zur App.</div>
     </div>
     <div id="setup-error"></div>
-    <button class="btn primary full" onclick="connectSupabase()" id="connect-btn">Verbinden &amp; loslegen</button>
+    <button class="btn primary full" onclick="doSetup()" id="connect-btn">Speichern &amp; loslegen</button>
+    <p style="font-size:12px;color:var(--text-hint);margin-top:14px;text-align:center;">
+      <a href="#" onclick="showLogin()" style="color:var(--accent);text-decoration:none;">← Zurück zum Login</a>
+    </p>
   </div>
 </div>
 
@@ -212,11 +365,11 @@
 <div id="app-screen">
   <div class="app-header">
     <div>
-      <div class="eyebrow">Stempelkarten</div>
+      <div class="app-eyebrow">Stempelkarten</div>
       <h1>Übersicht</h1>
-      <div class="sub"><span class="conn-dot"></span>Online gespeichert</div>
+      <div class="app-sub"><span class="conn-dot"></span>Online gespeichert</div>
     </div>
-    <button class="icon-btn" onclick="openDrawer()" title="Einstellungen" aria-label="Einstellungen">
+    <button class="icon-btn" onclick="openDrawer()" title="Einstellungen">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="3"/>
         <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/>
@@ -230,20 +383,44 @@
   </div>
 
   <div id="tab-kunden">
+    <!-- Add form -->
     <div class="add-form">
       <div class="add-form-label">Neuen Eintrag anlegen</div>
       <div class="form-row">
-        <div class="form-group"><input type="text" id="new-name" placeholder="Name" /></div>
-        <div class="form-group" style="max-width:145px;">
+        <div class="form-group" style="flex:2;min-width:140px;">
+          <input type="text" id="new-name" placeholder="Name" />
+        </div>
+        <div class="form-group" style="max-width:135px;">
           <select id="new-package">
             <option value="5">5er-Karte</option>
             <option value="10" selected>10er-Karte</option>
             <option value="20">20er-Karte</option>
           </select>
         </div>
-        <button class="btn primary" onclick="addCustomer()" id="add-btn">+ Hinzufügen</button>
+      </div>
+      <div class="form-row">
+        <div class="form-group" style="max-width:180px;">
+          <label>Kaufdatum</label>
+          <input type="date" id="new-date" />
+        </div>
+        <button class="btn primary" onclick="addCustomer()" id="add-btn" style="align-self:flex-end;">+ Hinzufügen</button>
       </div>
     </div>
+
+    <!-- Toolbar -->
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        <input type="text" id="search-input" placeholder="Suchen…" oninput="renderCustomers()" />
+      </div>
+      <div class="filter-group">
+        <button class="filter-btn active" data-filter="active" onclick="setFilter('active')">Aktuelle</button>
+        <button class="filter-btn" data-filter="full" onclick="setFilter('full')">Volle</button>
+        <button class="filter-btn" data-filter="expired" onclick="setFilter('expired')">Abgelaufene</button>
+        <button class="filter-btn" data-filter="all" onclick="setFilter('all')">Alle</button>
+      </div>
+    </div>
+
     <div id="customer-list"><div class="loading"><span class="spinner"></span> Lädt…</div></div>
   </div>
 
@@ -267,74 +444,115 @@
   <div class="drawer-body">
     <div class="drawer-section">
       <div class="drawer-section-title">Verbindung</div>
-      <div class="info-row"><span class="ilabel">Status</span><span class="ival" style="color:var(--accent);">● Verbunden</span></div>
+      <div class="info-row"><span class="ilabel">Status</span><span class="ival" style="color:var(--accent);">● Online</span></div>
       <div class="info-row"><span class="ilabel">Datenbank</span><span class="ival">Supabase</span></div>
     </div>
     <div class="drawer-section">
+      <div class="drawer-section-title">Passwort ändern</div>
+      <div class="form-group">
+        <label>Neues Passwort</label>
+        <input type="password" id="new-pw-1" placeholder="Mindestens 6 Zeichen" />
+      </div>
+      <div class="form-group">
+        <label>Wiederholen</label>
+        <input type="password" id="new-pw-2" placeholder="Passwort wiederholen" />
+      </div>
+      <button class="btn full" onclick="changePw()" style="font-size:13px;">Passwort speichern</button>
+    </div>
+    <div class="drawer-section">
       <div class="drawer-section-title">Konto</div>
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6;">Beim Logout werden die Zugangsdaten von diesem Gerät entfernt. Die gespeicherten Daten in der Datenbank bleiben vollständig erhalten.</p>
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6;">
+        Beim Logout werden die Zugangsdaten von diesem Gerät entfernt. Die gespeicherten Daten bleiben erhalten.
+      </p>
       <button class="btn danger full" onclick="logout()">Logout</button>
     </div>
   </div>
 </div>
 
-<!-- Theme toggle -->
-<button class="icon-btn" id="theme-toggle" title="Theme wechseln" onclick="toggleTheme()">
-  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-    <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-  </svg>
-</button>
-
 <div class="toast" id="toast"></div>
 
 <script>
-const COLORS = ['accent','accent','accent','accent','accent'];
-let sb = null, customers = [], stampMap = {};
+const VALIDITY_MONTHS = 6;
+let sb = null, customers = [], stampMap = {}, currentFilter = 'active';
 
-function formatDate(iso) {
-  const d = new Date(iso);
-  return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'\n'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+// ── Auth ──────────────────────────────────────────────────────────────────
+function hashPw(pw) {
+  // simple deterministic hash (no crypto needed for local pin)
+  let h = 0;
+  for (let i = 0; i < pw.length; i++) { h = Math.imul(31, h) + pw.charCodeAt(i) | 0; }
+  return h.toString(36);
 }
 
-let theme = localStorage.getItem('g-theme') || 'system';
-function applyTheme(t) { document.documentElement.style.colorScheme = t === 'dark' ? 'dark' : t === 'light' ? 'light' : 'light dark'; }
-applyTheme(theme);
-function toggleTheme() {
-  const order = ['system','light','dark'];
-  theme = order[(order.indexOf(theme)+1)%3];
-  localStorage.setItem('g-theme', theme);
-  applyTheme(theme);
-  showToast('Theme: ' + theme);
+function showLogin() {
+  document.getElementById('login-screen').style.display = 'flex';
+  document.getElementById('setup-screen').style.display = 'none';
+}
+function showSetup() {
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('setup-screen').style.display = 'flex';
 }
 
-function openDrawer()  { document.getElementById('drawer').classList.add('open'); document.getElementById('drawer-overlay').classList.add('open'); }
-function closeDrawer() { document.getElementById('drawer').classList.remove('open'); document.getElementById('drawer-overlay').classList.remove('open'); }
+function doLogin() {
+  const pw = document.getElementById('login-pw').value;
+  const stored = localStorage.getItem('g-pw-hash');
+  const url = localStorage.getItem('yoga-sb-url');
+  const key = localStorage.getItem('yoga-sb-key');
+  const err = document.getElementById('login-error');
+  if (!stored || !url || !key) { showSetup(); return; }
+  if (hashPw(pw) !== stored) {
+    err.textContent = 'Falsches Passwort.'; err.style.display = 'block'; return;
+  }
+  err.style.display = 'none';
+  sb = supabase.createClient(url, key);
+  startApp();
+}
 
-function connectSupabase() {
+function doSetup() {
   const url = document.getElementById('sb-url').value.trim();
   const key = document.getElementById('sb-key').value.trim();
-  document.getElementById('setup-error').style.display = 'none';
-  if (!url || !url.startsWith('https://')) { showSetupError('Bitte eine gültige Supabase URL eingeben.'); return; }
-  if (!key || key.length < 20) { showSetupError('Bitte den Anon Key eingeben.'); return; }
+  const pw  = document.getElementById('setup-pw').value;
+  const err = document.getElementById('setup-error');
+  err.style.display = 'none';
+  if (!url || !url.startsWith('https://')) { err.textContent = 'Bitte eine gültige URL eingeben.'; err.style.display='block'; return; }
+  if (!key || key.length < 20) { err.textContent = 'Bitte den Anon Key eingeben.'; err.style.display='block'; return; }
+  if (pw.length < 6) { err.textContent = 'Passwort muss mindestens 6 Zeichen haben.'; err.style.display='block'; return; }
   const btn = document.getElementById('connect-btn');
   btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Verbinde…';
   try {
     sb = supabase.createClient(url, key);
     localStorage.setItem('yoga-sb-url', url);
     localStorage.setItem('yoga-sb-key', key);
+    localStorage.setItem('g-pw-hash', hashPw(pw));
     startApp();
-  } catch(e) { btn.disabled = false; btn.innerHTML = 'Verbinden &amp; loslegen'; showSetupError('Fehler: '+e.message); }
+  } catch(e) { btn.disabled=false; btn.innerHTML='Speichern &amp; loslegen'; err.textContent='Fehler: '+e.message; err.style.display='block'; }
 }
-function showSetupError(msg) { const el = document.getElementById('setup-error'); el.textContent = msg; el.style.display = 'block'; }
+
+function changePw() {
+  const p1 = document.getElementById('new-pw-1').value;
+  const p2 = document.getElementById('new-pw-2').value;
+  if (p1.length < 6) { showToast('Mindestens 6 Zeichen'); return; }
+  if (p1 !== p2) { showToast('Passwörter stimmen nicht überein'); return; }
+  localStorage.setItem('g-pw-hash', hashPw(p1));
+  document.getElementById('new-pw-1').value = '';
+  document.getElementById('new-pw-2').value = '';
+  showToast('✓ Passwort gespeichert'); closeDrawer();
+}
 
 function logout() {
-  if (!confirm('Wirklich ausloggen?\n\nDeine Daten bleiben in der Datenbank gespeichert – nur die Verbindung auf diesem Gerät wird getrennt.')) return;
-  localStorage.removeItem('yoga-sb-url'); localStorage.removeItem('yoga-sb-key'); location.reload();
+  if (!confirm('Wirklich ausloggen?\n\nDeine Daten bleiben in der Datenbank erhalten.')) return;
+  localStorage.removeItem('yoga-sb-url'); localStorage.removeItem('yoga-sb-key'); localStorage.removeItem('g-pw-hash');
+  location.reload();
 }
 
+// ── Drawer ────────────────────────────────────────────────────────────────
+function openDrawer()  { document.getElementById('drawer').classList.add('open'); document.getElementById('drawer-overlay').classList.add('open'); }
+function closeDrawer() { document.getElementById('drawer').classList.remove('open'); document.getElementById('drawer-overlay').classList.remove('open'); }
+
+// ── Data ──────────────────────────────────────────────────────────────────
 async function startApp() {
-  document.getElementById('setup-screen').style.display = 'none';
-  document.getElementById('app-screen').style.display = 'block';
+  document.getElementById('login-screen').style.display  = 'none';
+  document.getElementById('setup-screen').style.display  = 'none';
+  document.getElementById('app-screen').style.display    = 'block';
   await loadAll();
 }
 
@@ -354,14 +572,16 @@ async function loadAll() {
 
 async function addCustomer() {
   const name = document.getElementById('new-name').value.trim();
-  const pkg = parseInt(document.getElementById('new-package').value);
+  const pkg  = parseInt(document.getElementById('new-package').value);
+  const date = document.getElementById('new-date').value || null;
   if (!name) { document.getElementById('new-name').focus(); return; }
   const btn = document.getElementById('add-btn'); btn.disabled = true;
-  const { data, error } = await sb.from('customers').insert([{ name, package: pkg, stamps: 0, color: 'accent' }]).select().single();
+  const { data, error } = await sb.from('customers').insert([{ name, package: pkg, stamps: 0, color: 'accent', purchase_date: date, extensions: 0 }]).select().single();
   btn.disabled = false;
   if (error) { showToast('Fehler: '+error.message); return; }
   customers.push(data); stampMap[data.id] = [];
   document.getElementById('new-name').value = '';
+  document.getElementById('new-date').value = '';
   renderCustomers(); showToast('✓ '+name+' hinzugefügt');
 }
 
@@ -400,6 +620,17 @@ async function redeemCard(id) {
   renderCustomers(); showToast('🎊 Karte eingelöst – neue Runde!');
 }
 
+async function extendCard(id) {
+  const c = customers.find(x => x.id === id);
+  if (!c) return;
+  if (!confirm('Karte von '+c.name+' um 1 Monat verlängern (5 €)?')) return;
+  const newExt = (c.extensions||0) + 1;
+  const { error } = await sb.from('customers').update({ extensions: newExt }).eq('id', id);
+  if (error) { showToast('Fehler: '+error.message); return; }
+  c.extensions = newExt;
+  renderCustomers(); showToast('✓ Verlängert (+1 Monat, 5 €)');
+}
+
 async function deleteCustomer(id) {
   const c = customers.find(x => x.id === id);
   if (!confirm(c.name+' wirklich löschen? Alle Stempel werden ebenfalls gelöscht.')) return;
@@ -409,53 +640,170 @@ async function deleteCustomer(id) {
   renderCustomers(); showToast('Eintrag gelöscht');
 }
 
+// ── Validity ──────────────────────────────────────────────────────────────
+function getValidity(c) {
+  if (!c.purchase_date) return null;
+  const start = new Date(c.purchase_date);
+  const totalMonths = VALIDITY_MONTHS + (c.extensions || 0);
+  const end = new Date(start);
+  end.setMonth(end.getMonth() + totalMonths);
+  const today = new Date(); today.setHours(0,0,0,0);
+  const daysLeft = Math.round((end - today) / (1000*60*60*24));
+  const totalDays = Math.round((end - start) / (1000*60*60*24));
+  const pct = Math.max(0, Math.min(100, Math.round((daysLeft / totalDays) * 100)));
+  const expired = daysLeft < 0;
+  const expiring = !expired && daysLeft <= 30;
+  return { daysLeft, pct, expired, expiring, end, totalMonths };
+}
+
+function formatDate(iso) {
+  const d = new Date(iso);
+  return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'\n'+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+function formatDateShort(dateStr) {
+  if (!dateStr) return '—';
+  const d = new Date(dateStr);
+  return String(d.getDate()).padStart(2,'0')+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+d.getFullYear();
+}
+
+// ── Filter & Sort ─────────────────────────────────────────────────────────
+function setFilter(f) {
+  currentFilter = f;
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.toggle('active', b.dataset.filter === f));
+  renderCustomers();
+}
+
+function filterAndSort(list) {
+  const q = (document.getElementById('search-input')?.value||'').toLowerCase().trim();
+  let filtered = list;
+
+  // search
+  if (q) filtered = filtered.filter(c => c.name.toLowerCase().includes(q));
+
+  // filter
+  filtered = filtered.filter(c => {
+    const count = (stampMap[c.id]||[]).length;
+    const full  = count >= c.package;
+    const v     = getValidity(c);
+    const expired = v ? v.expired : false;
+    if (currentFilter === 'active')  return !expired && !full;
+    if (currentFilter === 'full')    return full && !expired;
+    if (currentFilter === 'expired') return expired;
+    return true; // all
+  });
+
+  // sort by expiry (soonest first; no date = last)
+  filtered.sort((a, b) => {
+    const va = getValidity(a), vb = getValidity(b);
+    if (!va && !vb) return 0;
+    if (!va) return 1;
+    if (!vb) return -1;
+    return va.daysLeft - vb.daysLeft;
+  });
+
+  return filtered;
+}
+
+// ── Render ────────────────────────────────────────────────────────────────
 function initials(name) { return name.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase(); }
 
 function renderCustomers() {
   const list = document.getElementById('customer-list');
-  if (customers.length === 0) { list.innerHTML = '<div class="empty">Noch keine Einträge.<br>Oben einen neuen anlegen.</div>'; return; }
-  list.innerHTML = customers.map(c => {
+  const visible = filterAndSort(customers);
+
+  if (visible.length === 0) {
+    list.innerHTML = '<div class="empty">Keine Einträge gefunden.</div>';
+    return;
+  }
+
+  list.innerHTML = visible.map(c => {
     const stamps = stampMap[c.id]||[], count = stamps.length;
-    const pct = Math.round(count/c.package*100);
-    const full = count >= c.package, near = !full && count >= c.package-2;
-    const badge = full ? '<span class="badge info">Karte voll</span>' : near ? '<span class="badge warn">Fast voll</span>' : '<span class="badge success">Aktiv</span>';
-    const stampsHtml = Array.from({length:c.package},(_,i) => {
-      if (i < count) { const d = formatDate(stamps[i].created_at); return '<div class="stamp-wrap"><div class="stamp filled" title="'+d.replace('\n',' ')+'"></div><div class="stamp-date">'+d+'</div></div>'; }
+    const pct    = Math.round(count/c.package*100);
+    const full   = count >= c.package;
+    const v      = getValidity(c);
+    const expired = v ? v.expired : false;
+    const expiring = v ? v.expiring : false;
+
+    // badge
+    let badge = '';
+    if (expired)        badge = '<span class="badge expired">Abgelaufen</span>';
+    else if (full)      badge = '<span class="badge full">Karte voll</span>';
+    else if (expiring)  badge = '<span class="badge expiring">Läuft bald ab</span>';
+    else                badge = '<span class="badge active">Aktiv</span>';
+    if ((c.extensions||0) > 0) badge += '<span class="badge extended">+'+c.extensions+'M</span>';
+
+    // validity bar
+    let validityHtml = '';
+    if (v) {
+      const cls = v.expired ? 'expired' : v.expiring ? 'warn' : 'ok';
+      const daysText = v.expired
+        ? 'Abgelaufen seit '+ Math.abs(v.daysLeft)+' Tagen'
+        : v.daysLeft + ' Tage verbleibend';
+      validityHtml = `<div class="validity-row">
+        <span class="validity-label">${formatDateShort(c.purchase_date)} – ${formatDateShort(v.end.toISOString().slice(0,10))}</span>
+        <div class="validity-bar"><div class="validity-fill ${cls}" style="width:${v.pct}%"></div></div>
+        <span class="validity-days ${cls}">${daysText}</span>
+      </div>`;
+    }
+
+    // stamps
+    const stampsHtml = Array.from({length:c.package},(_,i)=>{
+      if (i < count) {
+        const d = formatDate(stamps[i].created_at);
+        const cls = expired ? 'stamp expired-stamp' : 'stamp filled';
+        return '<div class="stamp-wrap"><div class="'+cls+'" title="'+d.replace('\n',' ')+'"></div><div class="stamp-date">'+d+'</div></div>';
+      }
       return '<div class="stamp-wrap"><div class="stamp empty"></div><div class="stamp-date"> </div></div>';
     }).join('');
-    return '<div class="customer-card">'
-      +'<div class="customer-row"><div class="avatar">'+initials(c.name)+'</div>'
-      +'<div style="flex:1;min-width:0;"><div class="customer-name">'+c.name+badge+'</div>'
-      +'<div class="customer-meta">'+c.package+'er-Karte · '+count+'/'+c.package+'</div></div></div>'
-      +'<div class="stamps-grid">'+stampsHtml+'</div>'
-      +'<div class="progress-bar"><div class="progress-fill" style="width:'+pct+'%"></div></div>'
-      +'<div class="card-actions">'
-      +'<button class="btn primary" onclick="addStamp(\''+c.id+'\')" '+(full?'disabled':'')+'>+ Stempel</button>'
-      +(full?'<button class="btn" onclick="redeemCard(\''+c.id+'\')">Einlösen</button>':'')
-      +'<button class="btn" onclick="removeStamp(\''+c.id+'\')">– Entfernen</button>'
-      +'<button class="btn danger" onclick="deleteCustomer(\''+c.id+'\')" style="margin-left:auto;">Löschen</button>'
-      +'</div></div>';
+
+    const cardClass = expired ? 'customer-card is-expired' : expiring ? 'customer-card is-expiring' : 'customer-card';
+
+    return `<div class="${cardClass}">
+      <div class="customer-row">
+        <div class="avatar">${initials(c.name)}</div>
+        <div style="flex:1;min-width:0;">
+          <div class="customer-name">${c.name}${badge}</div>
+          <div class="customer-meta">${c.package}er-Karte · ${count}/${c.package} Stempel${c.purchase_date?' · Kauf: '+formatDateShort(c.purchase_date):''}</div>
+        </div>
+      </div>
+      ${validityHtml}
+      <div class="stamps-grid">${stampsHtml}</div>
+      <div class="progress-bar"><div class="progress-fill" style="width:${pct}%"></div></div>
+      <div class="card-actions">
+        ${!expired ? `<button class="btn primary sm" onclick="addStamp('${c.id}')" ${full?'disabled':''}>+ Stempel</button>` : ''}
+        ${full && !expired ? `<button class="btn sm" onclick="redeemCard('${c.id}')">Einlösen</button>` : ''}
+        ${!expired ? `<button class="btn sm" onclick="removeStamp('${c.id}')">– Entfernen</button>` : ''}
+        ${expired || expiring ? `<button class="btn warn sm" onclick="extendCard('${c.id}')">+ 1 Monat (5 €)</button>` : ''}
+        <button class="btn danger sm" onclick="deleteCustomer('${c.id}')" style="margin-left:auto;">Löschen</button>
+      </div>
+    </div>`;
   }).join('');
 }
 
 function renderStats() {
-  const total = customers.length;
-  const totalStamps = customers.reduce((s,c)=>s+(stampMap[c.id]||[]).length,0);
-  const full = customers.filter(c=>(stampMap[c.id]||[]).length>=c.package).length;
+  const total      = customers.length;
+  const totalStamps= customers.reduce((s,c)=>s+(stampMap[c.id]||[]).length,0);
+  const full       = customers.filter(c=>(stampMap[c.id]||[]).length>=c.package).length;
+  const expiredN   = customers.filter(c=>{ const v=getValidity(c); return v&&v.expired; }).length;
+
   document.getElementById('stats-grid').innerHTML =
     '<div class="stat-card"><div class="stat-label">Einträge</div><div class="stat-value">'+total+'</div></div>'
     +'<div class="stat-card"><div class="stat-label">Stempel</div><div class="stat-value">'+totalStamps+'</div></div>'
-    +'<div class="stat-card"><div class="stat-label">Volle Karten</div><div class="stat-value">'+full+'</div></div>';
-  const sorted = [...customers].sort((a,b)=>((stampMap[b.id]||[]).length/b.package)-((stampMap[a.id]||[]).length/a.package));
+    +'<div class="stat-card"><div class="stat-label">Volle Karten</div><div class="stat-value">'+full+'</div></div>'
+    +'<div class="stat-card" style="grid-column:span 1;"><div class="stat-label">Abgelaufen</div><div class="stat-value">'+expiredN+'</div></div>';
+
+  const sorted = filterAndSort([...customers]);
   document.getElementById('stats-detail').innerHTML =
-    '<div style="font-family:\'IBM Plex Mono\',monospace;font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--text-hint);margin-bottom:10px;">Alle Einträge</div>'
+    '<div style="font-size:10px;font-weight:500;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-hint);margin-bottom:10px;">Alle Einträge · nach Ablauf sortiert</div>'
     +sorted.map(c=>{
       const count=(stampMap[c.id]||[]).length, pct=Math.round(count/c.package*100);
+      const v = getValidity(c);
+      const daysStr = v ? (v.expired ? 'Abgelaufen' : v.daysLeft+' Tage') : '—';
       return '<div style="display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--border);">'
         +'<div class="avatar" style="width:32px;height:32px;font-size:11px;">'+initials(c.name)+'</div>'
-        +'<div style="flex:1;min-width:0;"><div style="font-family:\'Playfair Display\',serif;font-size:14px;font-weight:500;">'+c.name+'</div>'
-        +'<div style="font-size:11px;color:var(--text-muted);font-family:\'IBM Plex Mono\',monospace;">'+count+'/'+c.package+' · '+c.package+'er-Karte</div></div>'
-        +'<div style="width:80px;text-align:right;"><div style="font-family:\'IBM Plex Mono\',monospace;font-size:11px;color:var(--text-muted);margin-bottom:4px;">'+pct+'%</div>'
+        +'<div style="flex:1;min-width:0;"><div style="font-family:\'Cormorant Garamond\',serif;font-size:15px;">'+c.name+'</div>'
+        +'<div style="font-size:11px;color:var(--text-muted);">'+count+'/'+c.package+' · '+daysStr+'</div></div>'
+        +'<div style="width:70px;text-align:right;"><div style="font-size:11px;color:var(--text-muted);margin-bottom:4px;">'+pct+'%</div>'
         +'<div class="progress-bar" style="margin-bottom:0;"><div class="progress-fill" style="width:'+pct+'%"></div></div></div></div>';
     }).join('');
 }
@@ -467,13 +815,34 @@ function showTab(tab) {
 }
 
 function showToast(msg) {
-  const t = document.getElementById('toast'); t.textContent = msg; t.classList.add('show');
-  clearTimeout(t._t); t._t = setTimeout(()=>t.classList.remove('show'),2200);
+  const t=document.getElementById('toast'); t.textContent=msg; t.classList.add('show');
+  clearTimeout(t._t); t._t=setTimeout(()=>t.classList.remove('show'),2300);
 }
 
-const savedUrl = localStorage.getItem('yoga-sb-url'), savedKey = localStorage.getItem('yoga-sb-key');
-if (savedUrl && savedKey) { document.getElementById('sb-url').value=savedUrl; document.getElementById('sb-key').value=savedKey; sb=supabase.createClient(savedUrl,savedKey); startApp(); }
-document.getElementById('new-name').addEventListener('keydown', e=>{ if(e.key==='Enter') addCustomer(); });
+// ── Init ──────────────────────────────────────────────────────────────────
+const savedUrl = localStorage.getItem('yoga-sb-url');
+const savedKey = localStorage.getItem('yoga-sb-key');
+const savedPw  = localStorage.getItem('g-pw-hash');
+
+// Set today as default purchase date
+document.addEventListener('DOMContentLoaded', () => {
+  const d = document.getElementById('new-date');
+  if (d) d.value = new Date().toISOString().slice(0,10);
+});
+
+if (savedUrl && savedKey && savedPw) {
+  // show login
+  showLogin();
+} else if (savedUrl && savedKey) {
+  showSetup();
+} else {
+  showSetup();
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') doLogin();
+  if (e.key === 'Enter' && document.getElementById('app-screen').style.display === 'block') addCustomer();
+});
 </script>
 </body>
 </html>
