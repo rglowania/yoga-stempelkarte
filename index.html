@@ -79,35 +79,9 @@
   }
 
   /* ── Setup ── */
-  #setup-screen {
+
     display: none; align-items: center; justify-content: center;
     min-height: 100vh; padding: 1.5rem;
-  }
-  .setup-card {
-    background: var(--warm-white); border: 0.5px solid var(--border-mid);
-    border-radius: var(--radius-lg); padding: 2.5rem 2rem;
-    max-width: 460px; width: 100%; box-shadow: var(--shadow-lg);
-  }
-  .setup-eyebrow {
-    font-family: 'Jost', sans-serif; font-size: 11px; font-weight: 500;
-    letter-spacing: 2px; text-transform: uppercase; color: var(--accent);
-    margin-bottom: 10px;
-  }
-  .setup-card h1 { margin-bottom: 6px; }
-  .setup-card > p { font-size: 14px; color: var(--text-muted); margin-bottom: 1.5rem; }
-  .setup-hint-box {
-    background: var(--cream-2); border-radius: var(--radius); padding: 1rem 1.25rem;
-    margin-bottom: 1.5rem; font-size: 13px; color: var(--text-muted); line-height: 1.7;
-  }
-  .setup-hint-box strong { color: var(--text); font-weight: 500; }
-  .setup-hint-box code {
-    font-family: monospace; font-size: 12px;
-    background: var(--cream-3); padding: 1px 5px; border-radius: 4px;
-  }
-  #setup-error {
-    color: var(--danger); font-size: 13px; display: none;
-    padding: 8px 12px; background: var(--danger-bg);
-    border-radius: 8px; margin-top: 10px;
   }
 
   /* ── Form elements ── */
@@ -316,48 +290,18 @@
 <div id="login-screen">
   <div class="login-card">
     <div class="login-eyebrow">Stempelkarten</div>
-    <h1>Willkommen</h1>
-    <p>Bitte melde dich mit deinem Passwort an.</p>
+    <h1>Anmelden</h1>
+    <p>Bitte melde dich mit deinen Zugangsdaten an.</p>
+    <div class="form-group">
+      <label>E-Mail</label>
+      <input type="email" id="login-email" placeholder="deine@email.de" autocomplete="email" />
+    </div>
     <div class="form-group">
       <label>Passwort</label>
-      <input type="password" id="login-pw" placeholder="••••••••" />
+      <input type="password" id="login-pw" placeholder="••••••••" autocomplete="current-password" />
     </div>
     <div id="login-error"></div>
-    <button class="btn primary full" onclick="doLogin()" style="margin-top:6px;">Anmelden</button>
-    <p style="font-size:12px;color:var(--text-hint);margin-top:14px;text-align:center;">
-      Noch kein Passwort? <a href="#" onclick="showSetup()" style="color:var(--accent);text-decoration:none;">Einrichtung starten</a>
-    </p>
-  </div>
-</div>
-
-<!-- Setup -->
-<div id="setup-screen">
-  <div class="setup-card">
-    <div class="setup-eyebrow">Einrichtung</div>
-    <h1>Verbindung herstellen</h1>
-    <p>Einmalig Supabase-Zugangsdaten und ein Passwort festlegen.</p>
-    <div class="setup-hint-box">
-      <strong>Supabase Project URL &amp; Anon Key</strong> findest du unter<br>
-      Project Settings → API → <code>Project URL</code> + <code>anon public</code>
-    </div>
-    <div class="form-group">
-      <label>Supabase Project URL</label>
-      <input type="url" id="sb-url" placeholder="https://xxxx.supabase.co" />
-    </div>
-    <div class="form-group">
-      <label>Supabase Anon Key</label>
-      <input type="text" id="sb-key" placeholder="eyJhbGci..." />
-    </div>
-    <div class="form-group">
-      <label>Passwort festlegen</label>
-      <input type="password" id="setup-pw" placeholder="Mindestens 6 Zeichen" />
-      <div class="hint">Dieses Passwort schützt den Zugang zur App.</div>
-    </div>
-    <div id="setup-error"></div>
-    <button class="btn primary full" onclick="doSetup()" id="connect-btn">Speichern &amp; loslegen</button>
-    <p style="font-size:12px;color:var(--text-hint);margin-top:14px;text-align:center;">
-      <a href="#" onclick="showLogin()" style="color:var(--accent);text-decoration:none;">← Zurück zum Login</a>
-    </p>
+    <button class="btn primary full" id="login-btn" onclick="doLogin()" style="margin-top:6px;">Anmelden</button>
   </div>
 </div>
 
@@ -459,90 +403,40 @@
       </div>
       <button class="btn full" onclick="changePw()" style="font-size:13px;">Passwort speichern</button>
     </div>
-    <div class="drawer-section">
-      <div class="drawer-section-title">Konto</div>
-      <p style="font-size:13px;color:var(--text-muted);margin-bottom:14px;line-height:1.6;">
-        Beim Logout werden die Zugangsdaten von diesem Gerät entfernt. Die gespeicherten Daten bleiben erhalten.
-      </p>
-      <button class="btn danger full" onclick="logout()">Logout</button>
-    </div>
-  </div>
 </div>
 
 <div class="toast" id="toast"></div>
 
 <script>
 const VALIDITY_MONTHS = 6;
-let sb = null, customers = [], stampMap = {}, currentFilter = 'active';
+let sb, customers = [], stampMap = {}, currentFilter = 'active';
 
 // ── Auth ──────────────────────────────────────────────────────────────────
-function hashPw(pw) {
-  // simple deterministic hash (no crypto needed for local pin)
-  let h = 0;
-  for (let i = 0; i < pw.length; i++) { h = Math.imul(31, h) + pw.charCodeAt(i) | 0; }
-  return h.toString(36);
-}
+const SB_URL = 'https://dirckattquksenqogvjt.supabase.co';
+const SB_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRpcmNrYXR0cXVrc2VucW9ndmp0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzMzNTE4MDMsImV4cCI6MjA4ODkyNzgwM30.5Hq91-CJHfRazEDfGzgDFKbiSEPbsoUG0jzgKZEnDY0';
+sb = supabase.createClient(SB_URL, SB_KEY);
 
-function showLogin() {
-  document.getElementById('login-screen').style.display = 'flex';
-  document.getElementById('setup-screen').style.display = 'none';
-}
-function showSetup() {
-  document.getElementById('login-screen').style.display = 'none';
-  document.getElementById('setup-screen').style.display = 'flex';
-}
-
-function doLogin() {
-  const pw = document.getElementById('login-pw').value;
-  const stored = localStorage.getItem('g-pw-hash');
-  const url = localStorage.getItem('yoga-sb-url');
-  const key = localStorage.getItem('yoga-sb-key');
-  const err = document.getElementById('login-error');
-  if (!stored || !url || !key) { showSetup(); return; }
-  if (hashPw(pw) !== stored) {
-    err.textContent = 'Falsches Passwort.'; err.style.display = 'block'; return;
-  }
+async function doLogin() {
+  const email = document.getElementById('login-email').value.trim();
+  const pw    = document.getElementById('login-pw').value;
+  const err   = document.getElementById('login-error');
+  const btn   = document.getElementById('login-btn');
   err.style.display = 'none';
-  sb = supabase.createClient(url, key);
+  if (!email) { err.textContent = 'Bitte E-Mail eingeben.'; err.style.display='block'; return; }
+  if (!pw)    { err.textContent = 'Bitte Passwort eingeben.'; err.style.display='block'; return; }
+  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Anmelden…';
+  const { error } = await sb.auth.signInWithPassword({ email, password: pw });
+  btn.disabled = false; btn.innerHTML = 'Anmelden';
+  if (error) { err.textContent = 'E-Mail oder Passwort falsch.'; err.style.display='block'; return; }
   startApp();
 }
 
-function doSetup() {
-  const url = document.getElementById('sb-url').value.trim();
-  const key = document.getElementById('sb-key').value.trim();
-  const pw  = document.getElementById('setup-pw').value;
-  const err = document.getElementById('setup-error');
-  err.style.display = 'none';
-  if (!url || !url.startsWith('https://')) { err.textContent = 'Bitte eine gültige URL eingeben.'; err.style.display='block'; return; }
-  if (!key || key.length < 20) { err.textContent = 'Bitte den Anon Key eingeben.'; err.style.display='block'; return; }
-  if (pw.length < 6) { err.textContent = 'Passwort muss mindestens 6 Zeichen haben.'; err.style.display='block'; return; }
-  const btn = document.getElementById('connect-btn');
-  btn.disabled = true; btn.innerHTML = '<span class="spinner"></span> Verbinde…';
-  try {
-    sb = supabase.createClient(url, key);
-    localStorage.setItem('yoga-sb-url', url);
-    localStorage.setItem('yoga-sb-key', key);
-    localStorage.setItem('g-pw-hash', hashPw(pw));
-    startApp();
-  } catch(e) { btn.disabled=false; btn.innerHTML='Speichern &amp; loslegen'; err.textContent='Fehler: '+e.message; err.style.display='block'; }
-}
-
-function changePw() {
-  const p1 = document.getElementById('new-pw-1').value;
-  const p2 = document.getElementById('new-pw-2').value;
-  if (p1.length < 6) { showToast('Mindestens 6 Zeichen'); return; }
-  if (p1 !== p2) { showToast('Passwörter stimmen nicht überein'); return; }
-  localStorage.setItem('g-pw-hash', hashPw(p1));
-  document.getElementById('new-pw-1').value = '';
-  document.getElementById('new-pw-2').value = '';
-  showToast('✓ Passwort gespeichert'); closeDrawer();
-}
-
-function logout() {
+async function logout() {
   if (!confirm('Wirklich ausloggen?\n\nDeine Daten bleiben in der Datenbank erhalten.')) return;
-  localStorage.removeItem('yoga-sb-url'); localStorage.removeItem('yoga-sb-key'); localStorage.removeItem('g-pw-hash');
+  await sb.auth.signOut();
   location.reload();
 }
+
 
 // ── Drawer ────────────────────────────────────────────────────────────────
 function openDrawer()  { document.getElementById('drawer').classList.add('open'); document.getElementById('drawer-overlay').classList.add('open'); }
@@ -550,9 +444,8 @@ function closeDrawer() { document.getElementById('drawer').classList.remove('ope
 
 // ── Data ──────────────────────────────────────────────────────────────────
 async function startApp() {
-  document.getElementById('login-screen').style.display  = 'none';
-  document.getElementById('setup-screen').style.display  = 'none';
-  document.getElementById('app-screen').style.display    = 'block';
+  document.getElementById('login-screen').style.display = 'none';
+  document.getElementById('app-screen').style.display = 'block';
   await loadAll();
 }
 
@@ -808,6 +701,19 @@ function renderStats() {
     }).join('');
 }
 
+
+async function changePw() {
+  const p1 = document.getElementById('new-pw-1').value;
+  const p2 = document.getElementById('new-pw-2').value;
+  if (p1.length < 6) { showToast('Mindestens 6 Zeichen'); return; }
+  if (p1 !== p2) { showToast('Passwörter stimmen nicht überein'); return; }
+  const { error } = await sb.auth.updateUser({ password: p1 });
+  if (error) { showToast('Fehler: ' + error.message); return; }
+  document.getElementById('new-pw-1').value = '';
+  document.getElementById('new-pw-2').value = '';
+  showToast('✓ Passwort gespeichert'); closeDrawer();
+}
+
 function showTab(tab) {
   ['kunden','statistik'].forEach(t=>{ document.getElementById('tab-'+t).style.display=t===tab?'':'none'; });
   document.querySelectorAll('.tab').forEach((el,i)=>{ el.classList.toggle('active',['kunden','statistik'][i]===tab); });
@@ -820,24 +726,20 @@ function showToast(msg) {
 }
 
 // ── Init ──────────────────────────────────────────────────────────────────
-const savedUrl = localStorage.getItem('yoga-sb-url');
-const savedKey = localStorage.getItem('yoga-sb-key');
-const savedPw  = localStorage.getItem('g-pw-hash');
-
 // Set today as default purchase date
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   const d = document.getElementById('new-date');
   if (d) d.value = new Date().toISOString().slice(0,10);
+
+  // Check for existing session
+  const { data: { session } } = await sb.auth.getSession();
+  if (session) {
+    startApp();
+  } else {
+    showLogin();
+  }
 });
 
-if (savedUrl && savedKey && savedPw) {
-  // show login
-  showLogin();
-} else if (savedUrl && savedKey) {
-  showSetup();
-} else {
-  showSetup();
-}
 
 document.addEventListener('keydown', e => {
   if (e.key === 'Enter' && document.getElementById('login-screen').style.display !== 'none') doLogin();
